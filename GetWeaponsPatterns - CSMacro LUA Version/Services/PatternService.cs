@@ -1,8 +1,5 @@
 ﻿using GetPattern.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+    
 namespace GetPattern.Services
 {
     public class PatternService

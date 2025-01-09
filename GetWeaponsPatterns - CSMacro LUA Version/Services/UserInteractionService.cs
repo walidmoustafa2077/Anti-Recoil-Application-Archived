@@ -1,6 +1,4 @@
 ﻿using GetPattern.Models;
-using System;
-using System.Text;
 
 namespace GetPattern.Services
 {

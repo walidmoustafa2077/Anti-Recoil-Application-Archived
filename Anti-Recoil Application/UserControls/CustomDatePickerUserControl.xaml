@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Anti_Recoil_Application.UserControls.CustomDatePickerUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Anti_Recoil_Application.UserControls"
+             mc:Ignorable="d">
+    <Grid>
+        <!-- TextBox to display the selected date -->
+        <Button x:Name="DateTextBox"
+                Style="{StaticResource SecondaryButtonStyle}"
+                PreviewMouseLeftButtonUp="DateTextBox_MouseLeftButtonDown"
+                Content="Enter Date of Birth" />
+
+        <!-- Calendar Popup -->
+        <Popup x:Name="DatePopup"
+               Placement="Bottom"
+               StaysOpen="False"
+               IsOpen="False">
+            <Border CornerRadius="4">
+                <Calendar x:Name="CalendarControl"
+                          Style="{DynamicResource Calendar}"
+                          SelectedDatesChanged="CalendarControl_SelectedDateChanged">
+
+                </Calendar>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

@@ -1,40 +1,21 @@
 ﻿<Window x:Class="Anti_Recoil_Application.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Anti_Recoil_Application"
+        xmlns:local="clr-namespace:Anti_Recoil_Application.UserControls"
         Title="MainWindow"
         Height="600"
         Width="800"
         ResizeMode="NoResize">
 
+    <Window.Resources>
+
+    </Window.Resources>
+
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="Assets/Images/Wallpapers/Main.png" />
+            <ImageBrush ImageSource="Resources/Images/Wallpapers/Main.png" />
         </Grid.Background>
-
-        <Grid>
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0.05,-0.4"
-                                     EndPoint="0,1"
-                                     EndPoint="0.15,0.55"
-                                     Opacity="0.95"
-                                     MappingMode="RelativeToBoundingBox"
-                                     SpreadMethod="Pad">
-                    <GradientStop Color="#0B0607"
-                                  Offset="1" />
-                    <GradientStop Color="#33510E0F"
-                                  Offset="0" />
-                </LinearGradientBrush>
-            </Grid.Background>
-
-            <StackPanel Width="400"
-                        Height="auto"
-                        VerticalAlignment="Center">
-                <Button Style="{StaticResource FilledButton}"
-                        Content="Login" />
-            </StackPanel>
-        </Grid>
-
+        <local:HomeUserControl />
 
     </Grid>
 </Window>

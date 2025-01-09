@@ -1,12 +1,9 @@
 ﻿using GetPattern.Models;
 using GetPattern.Services;
 using GetWeaponsPatterns___CSMacro_LUA_Version.Models;
-using System.Diagnostics.Contracts;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace AntiRecoil_Tester.Services
 {
