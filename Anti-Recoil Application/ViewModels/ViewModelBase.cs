@@ -4,6 +4,7 @@ namespace Anti_Recoil_Application.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        private string _errorMessage;
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

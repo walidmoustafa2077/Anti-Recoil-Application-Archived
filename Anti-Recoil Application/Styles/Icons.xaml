@@ -53,6 +53,8 @@
         </Setter>
     </Style>
 
+   
+
     <Style x:Key="BrandIcon"
            TargetType="ContentControl">
         <!-- Bindable properties for width, height, and fill -->

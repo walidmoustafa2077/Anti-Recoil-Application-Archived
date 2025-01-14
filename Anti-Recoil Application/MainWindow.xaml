@@ -5,17 +5,64 @@
         Title="MainWindow"
         Height="600"
         Width="800"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
 
     <Window.Resources>
 
     </Window.Resources>
 
-    <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="Resources/Images/Wallpapers/Main.png" />
-        </Grid.Background>
-        <local:HomeUserControl />
+    <Border Padding="10"
+            CornerRadius="24">
 
-    </Grid>
+        <Border.Background>
+            <!-- Use the same image for the Border's background -->
+            <ImageBrush ImageSource="Resources/Images/Wallpapers/Main.png" />
+        </Border.Background>
+
+        <Grid x:Name="MainGrid">
+            <Grid.Background>
+                <ImageBrush ImageSource="Resources/Images/Wallpapers/Main.png" />
+            </Grid.Background>
+
+            <StackPanel Margin="4"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+                <Button Width="Auto"
+                        Margin="0 0 8 0"
+                        Style="{StaticResource MinimaizeAppButtonStyle}"
+                        Click="MinimizeButton_Click" />
+                <Button Margin="8 0 0 0"
+                        Style="{StaticResource CloseAppButtonStyle}"
+                        Click="CloseButton_Click" />
+            </StackPanel>
+
+
+            <local:LoginUserControl  x:Name="LoginUserControl" />
+
+            <Grid x:Name="DialogBackground"
+              Background="Black"
+              Opacity="0.75"
+              Visibility="{Binding IsDialogVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <!-- Custom Dialog -->
+            <ContentControl Content="{Binding CurrentDialog}"
+                            Visibility="{Binding IsDialogVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+
+            <Grid x:Name="LoadingBackground"
+              Background="Black"
+              Opacity="0.75"
+              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <ContentControl Style="{StaticResource LoadingIcon}"
+                        Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        </Grid>
+    </Border>
 </Window>

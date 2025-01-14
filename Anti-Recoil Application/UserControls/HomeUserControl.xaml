@@ -5,18 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Anti_Recoil_Application.UserControls"
              mc:Ignorable="d">
-    <Grid 
-          Height="418"
+    <Grid Height="418"
           Width="800"
           VerticalAlignment="Bottom">
         <Grid Background="{StaticResource BrushPrimary}"
               Opacity="0.3" />
+
         <StackPanel Margin="8 0"
                     VerticalAlignment="Bottom">
-            <CheckBox Style="{StaticResource ActivateButtonStyle}"
-                      VerticalAlignment="Top"
-                      Margin="0, -118, 0, 0" />
-
             <ListView Name="WeaponListView"
                       Height="262"
                       Width="800"
@@ -68,5 +64,21 @@
                 </ListView.Resources>
             </ListView>
         </StackPanel>
+
+        <StackPanel VerticalAlignment="Top"
+                    HorizontalAlignment="Stretch"
+                    Margin="12"
+                    Orientation="Horizontal">
+            <Button Style="{StaticResource TextHolderStyle}"
+                    Content="{Binding SelectedWeapon.WeaponName}"
+                    Width="220"
+                    Height="42" />
+        </StackPanel>
+
+
+
+        <CheckBox Style="{StaticResource ActivateButtonStyle}"
+                  VerticalAlignment="Top"
+                  Margin="0, -118, 0, 0" />
     </Grid>
 </UserControl>

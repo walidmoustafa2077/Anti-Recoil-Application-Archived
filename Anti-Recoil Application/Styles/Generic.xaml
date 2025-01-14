@@ -43,7 +43,60 @@
     <FontWeight x:Key="FontWeightBold">Bold</FontWeight>
     <FontWeight x:Key="FontWeightLight">Light</FontWeight>
 
+    <!-- TextBlock Style for Headings -->
+    <Style x:Key="HeadingStyle"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily"
+                Value="{StaticResource FontFamilyPrimary}" />
+        <Setter Property="FontWeight"
+                Value="{StaticResource FontWeightBold}" />
+        <Setter Property="FontSize"
+                Value="24" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BrushAccent}" />
+    </Style>
 
+    <!-- TextBlock Style for Sub-headings -->
+    <Style x:Key="SubHeadingStyle"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily"
+                Value="{StaticResource FontFamilyPrimary}" />
+        <Setter Property="FontWeight"
+                Value="{StaticResource FontWeightRegular}" />
+        <Setter Property="FontSize"
+                Value="20" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BrushAccent}" />
+    </Style>
+
+    <!-- TextBlock Style for Labels -->
+    <Style x:Key="LabelStyle"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily"
+                Value="{StaticResource FontFamilyPrimary}" />
+        <Setter Property="FontWeight"
+                Value="{StaticResource FontWeightLight}" />
+        <Setter Property="FontSize"
+                Value="16" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BrushAccent}" />
+    </Style>
+
+    <!-- TextBlock Style for Regular Text -->
+    <Style x:Key="RegularTextStyle"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily"
+                Value="{StaticResource FontFamilyPrimary}" />
+        <Setter Property="FontWeight"
+                Value="{StaticResource FontWeightRegular}" />
+        <Setter Property="FontSize"
+                Value="14" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BrushAccent}" />
+    </Style>
+
+    <!-- Define a Circular ProgressBar Style -->
+    
     <!-- Primary Input Field Style -->
     <Style x:Key="PrimaryInputFieldStyle"
            TargetType="TextBox">
@@ -264,12 +317,11 @@
     </Style>
 
 
-
     <!-- Primary Button Style -->
     <Style x:Key="PrimaryButtonStyle"
            TargetType="Button">
         <Setter Property="Background"
-                Value="{StaticResource BrushTertiary}" />
+                Value="{StaticResource BrushQuaternary}" />
         <Setter Property="Foreground"
                 Value="{StaticResource BrushAccent}" />
         <Setter Property="FontFamily"
@@ -294,7 +346,7 @@
                             CornerRadius="5"
                             TextBlock.Foreground="{TemplateBinding Foreground}"
                             TextBlock.FontSize="16"
-                            Height="26">
+                            Height="30">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                     </Border>
@@ -312,7 +364,7 @@
                                  Value="True">
                             <Setter TargetName="ButtonBorder"
                                     Property="Background"
-                                    Value="{StaticResource BrushSecondary}" />
+                                    Value="{StaticResource BrushTertiary}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -349,7 +401,7 @@
                             CornerRadius="5"
                             TextBlock.Foreground="{TemplateBinding Foreground}"
                             TextBlock.FontSize="16"
-                            Height="26">
+                            Height="30">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                     </Border>
@@ -480,6 +532,179 @@
                                     Value="0.5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CloseAppButtonStyle"
+           TargetType="Button">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BrushSecondary}" />
+        <Setter Property="FontFamily"
+                Value="Consolas" />
+        <Setter Property="FontSize"
+                Value="16" />
+        <Setter Property="Padding"
+                Value="10" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="Cursor"
+                Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="IconPath">
+                        <Path StrokeThickness="3"
+                                Stroke="{StaticResource BrushAccent}"
+                                StrokeStartLineCap="Round"
+                                StrokeEndLineCap="Round"
+                              RenderTransformOrigin="0.5,0.5"
+                              VerticalAlignment="Center">
+                            <Path.Data>
+                                <PathGeometry Figures="M2.0752 14.9392L14.8031 2.2113M2.19652 2.06055L14.9244 14.7885"
+                                                FillRule="NonZero" />
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Hover Effect -->
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="IconPath"
+                                    Property="Opacity"
+                                    Value="0.7" />
+                        </Trigger>
+                        <!-- Pressed Effect -->
+                        <Trigger Property="IsPressed"
+                                 Value="True">
+                            <Setter TargetName="IconPath"
+                                    Property="Opacity"
+                                    Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MinimaizeAppButtonStyle"
+           TargetType="Button">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BrushSecondary}" />
+        <Setter Property="Padding"
+                Value="10" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="Cursor"
+                Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="IconPath">
+                        <Path StrokeThickness="3"
+                                Stroke="{StaticResource BrushAccent}"
+                                StrokeStartLineCap="Round"
+                                StrokeEndLineCap="Round"
+                                RenderTransformOrigin="0.5,0.5"
+                              VerticalAlignment="Center">
+                            <Path.Data>
+                                <PathGeometry Figures="M2.40365 2.51041L20.596 2.48959"
+                                                FillRule="NonZero" />
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Hover Effect -->
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="IconPath"
+                                    Property="Opacity"
+                                    Value="0.7" />
+                        </Trigger>
+                        <!-- Pressed Effect -->
+                        <Trigger Property="IsPressed"
+                                 Value="True">
+                            <Setter TargetName="IconPath"
+                                    Property="Opacity"
+                                    Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Circle ProgressBar Style -->
+    <Style x:Key="LoadingIcon"
+           TargetType="ContentControl">
+        <!-- Bindable properties for width, height, and fill -->
+        <Setter Property="Width"
+                Value="Auto" />
+        <Setter Property="Height"
+                Value="Auto" />
+        <Setter Property="Foreground"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}" />
+
+        <!-- Define the visual template -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Canvas Width="110"
+                            Height="110">
+                        <!-- Apply the RotateTransform to the Canvas -->
+                        <Canvas.RenderTransform>
+                            <RotateTransform x:Name="rotateTransform"
+                                             CenterX="55"
+                                             CenterY="55" />
+                        </Canvas.RenderTransform>
+
+                        <!-- Path representing the loading circle -->
+                        <Path x:Name="LoadingPath"
+                              StrokeThickness="10"
+                              Stroke="{StaticResource BrushAccent}"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              RenderTransformOrigin="0.5,0.5"
+                              HorizontalAlignment="Center"
+                              Height="90"
+                              Canvas.Left="10"
+                              Stretch="Fill"
+                              Canvas.Top="10"
+                              VerticalAlignment="Center"
+                              Width="90">
+                            <Path.Data>
+                                <PathGeometry Figures="M105 55C105 65.559 101.657 75.8469 95.4509 84.3893C89.2444 92.9316 80.493 99.2899 70.4509 102.553C60.4087 105.816 49.5913 105.816 39.5491 102.553C29.507 99.2899 20.7556 92.9316 14.5491 84.3893C8.34275 75.8469 5 65.559 5 55C5 44.441 8.34275 34.1531 14.5492 25.6107C20.7556 17.0684 29.507 10.7101 39.5492 7.44717C49.5913 4.18427 60.4087 4.18428 70.4509 7.44718"
+                                              FillRule="NonZero" />
+                            </Path.Data>
+                        </Path>
+                    </Canvas>
+
+                    <!-- Rotation Animation -->
+                    <ControlTemplate.Triggers>
+                        <!-- Trigger the rotation animation when the control is loaded -->
+                        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard RepeatBehavior="Forever"
+                                            AutoReverse="False">
+                                    <DoubleAnimation Storyboard.TargetName="rotateTransform"
+                                                     Storyboard.TargetProperty="Angle"
+                                                     From="0"
+                                                     To="360"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -1170,6 +1395,52 @@
                         </VisualStateManager.VisualStateGroups>
                     </Grid>
                     <!-- VisualStateManager to handle different states -->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TextHolderStyle"
+           TargetType="Button">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BrushAccent}" />
+        <Setter Property="FontFamily"
+                Value="Consolas" />
+        <Setter Property="FontSize"
+                Value="16" />
+        <Setter Property="Padding"
+                Value="10,5" />
+        <Setter Property="Cursor"
+                Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="TextHolderBorder"
+                            Background="{StaticResource BrushPrimary}"
+                            CornerRadius="5">
+                        <TextBlock x:Name="TextHolderText"
+                                   Text="{Binding SelectedWeapon.WeaponName, FallbackValue='No Weapon Selected'}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- Trigger to show 'No Weapon Selected' when SelectedWeapon is null -->
+                        <DataTrigger Binding="{Binding SelectedWeapon}"
+                                     Value="{x:Null}">
+                            <Setter TargetName="TextHolderText"
+                                    Property="Text"
+                                    Value="No Weapon Selected" />
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="TextHolderBorder"
+                                    Property="TextBlock.FontWeight"
+                                    Value="Bold" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

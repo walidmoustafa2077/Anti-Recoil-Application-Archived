@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Anti_Recoil_Application.UserControls.Dialogs.MainDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Anti_Recoil_Application.UserControls.Dialogs"
+             mc:Ignorable="d" >
+    
+    <Border CornerRadius="10"
+            BorderBrush="{StaticResource BrushTertiary}"
+            BorderThickness="1.5"
+            Background="{StaticResource BrushPrimary}"
+            Width="Auto"
+            Height="Auto">
+        <Grid Margin="10">
+            <StackPanel>
+                <!-- Header -->
+                <TextBlock x:Name="HeaderText"
+                           Margin="12"
+                           HorizontalAlignment="Center"
+                           Text="{Binding HeaderText}"
+                           FontWeight="Bold"
+                           Style="{StaticResource LabelStyle}" 
+                           TextWrapping="Wrap"/>
+
+                <!-- Button -->
+                <Button x:Name="ActionButton"
+                        Content="{Binding ButtonText}"
+                        Width="180"
+                        Height="35"
+                        Margin="12"
+                        HorizontalAlignment="Center"
+                        Command="{Binding ButtonCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+
+            </StackPanel>
+
+        </Grid>
+    </Border>
+
+</UserControl>
