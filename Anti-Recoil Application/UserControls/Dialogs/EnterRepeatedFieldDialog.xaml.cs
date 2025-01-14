@@ -1,23 +1,17 @@
-﻿using Anti_Recoil_Application.ViewModels;
+﻿using Anti_Recoil_Application.ViewModels.DialogViewModels;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Anti_Recoil_Application.UserControls
+namespace Anti_Recoil_Application.UserControls.Dialogs
 {
     /// <summary>
-    /// Interaction logic for LoginUserControl.xaml
+    /// Interaction logic for EnterUsernameDialog.xaml
     /// </summary>
-    public partial class LoginUserControl : UserControl
+    public partial class EnterRepeatedFieldDialog : UserControl
     {
-        public LoginUserControl()
+        public EnterRepeatedFieldDialog()
         {
             InitializeComponent();
-        }
-
-        // A method to set the DataContext after the control is loaded
-        public void Initialize(LoginViewModel loginViewModel)
-        {
-            DataContext = loginViewModel;
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
@@ -27,14 +21,16 @@ namespace Anti_Recoil_Application.UserControls
             if (passwordBox != null)
             {
                 // Assuming DataContext is set to the ViewModel
-                var viewModel = DataContext as LoginViewModel;
+                var viewModel = DataContext as EnterFieldDialogViewModel;
                 if (viewModel != null)
                 {
                     // Update the Password property in the ViewModel
-                    viewModel.Password = passwordBox.Password;
+                    if (passwordBox == Password)
+                        viewModel.MainField = passwordBox.Password;
+                    else
+                        viewModel.SecondField = passwordBox.Password;
                 }
             }
         }
-
     }
 }

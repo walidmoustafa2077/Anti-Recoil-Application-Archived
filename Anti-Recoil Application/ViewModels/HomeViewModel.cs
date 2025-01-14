@@ -19,13 +19,13 @@ namespace Anti_Recoil_Application.ViewModels
 
         public HomeViewModel()
         {
-            //Weapons = new ObservableCollection<WeaponViewModel>
-            //{
-            //    new WeaponViewModel { WeaponName = "AK-47", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/AKM.png", Shortcut = "F1", IsActive = false },
-            //    new WeaponViewModel { WeaponName = "M4A1", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/FSCR.png", Shortcut = "F2", IsActive = false },
-            //    new WeaponViewModel { WeaponName = "AWP", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/LUIS.png", Shortcut = "F3", IsActive = false },
-            //    new WeaponViewModel { WeaponName = "AWP", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/LUIS.png", Shortcut = "F3", IsActive = false }
-            //};
+            Weapons = new ObservableCollection<WeaponViewModel>
+            {
+                new WeaponViewModel { WeaponName = "AK-47", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/AKM.png", Shortcut = "F1", IsActive = false },
+                new WeaponViewModel { WeaponName = "M4A1", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/FSCR.png", Shortcut = "F2", IsActive = false },
+                new WeaponViewModel { WeaponName = "AWP", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/LUIS.png", Shortcut = "F3", IsActive = false },
+                new WeaponViewModel { WeaponName = "AWP", WeaponImage = "pack://application:,,,/Resources/Images/Weapons/LUIS.png", Shortcut = "F3", IsActive = false }
+            };
             ActivateWeaponCommand = new CommandBase(ActivateWeapon);
         }
 
@@ -36,7 +36,7 @@ namespace Anti_Recoil_Application.ViewModels
                 if (SelectedWeapon != weapon)
                 {
                     SelectedWeapon = weapon;
-           
+
                     foreach (var w in Weapons)
                     {
                         w.IsActive = w == weapon;

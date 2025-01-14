@@ -1,7 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
+﻿using Anti_Recoil_Application.UserControls;
+using Anti_Recoil_Application.ViewModels;
+using System.Windows;
 
 namespace Anti_Recoil_Application
 {
@@ -10,15 +9,32 @@ namespace Anti_Recoil_Application
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+        private readonly MainWindowViewModel _mainWindowViewModel;
 
-        public MainWindow()
+
+        public MainWindow(MainWindowViewModel mainWindowViewModel, LoginViewModel loginViewModel, LoginUserControl loginUserControl)
         {
             InitializeComponent();
-            
+
+            DataContext = mainWindowViewModel; // Critical for binding to work
+
+            // Initialize the LoginUserControl with the LoginViewModel
+            LoginUserControl.Initialize(loginViewModel);
+
         }
 
-   
+        // Event handler for Minimize Button
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        // Event handler for Close Button
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
     }
 
 
