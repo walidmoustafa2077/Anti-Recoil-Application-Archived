@@ -12,15 +12,11 @@ namespace Anti_Recoil_Application
         private readonly MainWindowViewModel _mainWindowViewModel;
 
 
-        public MainWindow(MainWindowViewModel mainWindowViewModel, LoginViewModel loginViewModel, LoginUserControl loginUserControl)
+        public MainWindow(MainWindowViewModel mainWindowViewModel)
         {
             InitializeComponent();
 
             DataContext = mainWindowViewModel; // Critical for binding to work
-
-            // Initialize the LoginUserControl with the LoginViewModel
-            LoginUserControl.Initialize(loginViewModel);
-
         }
 
         // Event handler for Minimize Button

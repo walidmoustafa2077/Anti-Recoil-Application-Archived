@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Anti_Recoil_Application.UserControls"
         Title="MainWindow"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
         Height="600"
         Width="800"
-        ResizeMode="NoResize"
-        WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent">
 
@@ -41,9 +42,10 @@
                         Click="CloseButton_Click" />
             </StackPanel>
 
-
-            <local:LoginUserControl  x:Name="LoginUserControl" />
-
+            <ContentControl Content="{Binding CurrentView}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+            
             <Grid x:Name="DialogBackground"
               Background="Black"
               Opacity="0.75"

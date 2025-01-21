@@ -5,8 +5,8 @@ namespace Anti_Recoil_Application.ViewModels.DialogViewModels
 {
     public class MainDialogViewModel : ViewModelBase
     {
-        private string _headerText;
-        private string _buttonText;
+        private string _headerText = "Default Header";
+        private string _buttonText = "Submit";
 
         public string HeaderText
         {

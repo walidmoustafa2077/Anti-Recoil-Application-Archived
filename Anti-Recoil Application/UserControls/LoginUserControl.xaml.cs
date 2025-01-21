@@ -14,12 +14,6 @@ namespace Anti_Recoil_Application.UserControls
             InitializeComponent();
         }
 
-        // A method to set the DataContext after the control is loaded
-        public void Initialize(LoginViewModel loginViewModel)
-        {
-            DataContext = loginViewModel;
-        }
-
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             // Ensure sender is a PasswordBox control

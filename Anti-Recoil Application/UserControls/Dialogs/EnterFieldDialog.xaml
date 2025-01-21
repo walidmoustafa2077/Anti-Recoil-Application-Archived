@@ -27,9 +27,10 @@
 
                 <!-- Username -->
                 <TextBox Style="{StaticResource PrimaryInputFieldStyle}"
-                         helpers:WatermarkHelper.WatermarkText="Enter your username"
+                         helpers:WatermarkHelper.WatermarkText="{Binding MainFieldWatermarkText, UpdateSourceTrigger=PropertyChanged}"
                          Margin="10 6 10 12"
                          Text="{Binding MainField, UpdateSourceTrigger=PropertyChanged}" />
+
 
                 <StackPanel Orientation="Horizontal" Margin="12 6">
      

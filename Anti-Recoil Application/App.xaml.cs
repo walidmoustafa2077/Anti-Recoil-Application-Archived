@@ -27,8 +27,8 @@ namespace Anti_Recoil_Application
                             services.AddSingleton<DialogService>();
                             services.AddSingleton<HostProviderService>();
 
-                            services.AddSingleton<LoginUserControl>();
                             services.AddSingleton<LoginViewModel>();
+                            services.AddSingleton<RegisterViewModel>();
 
 
                             // Add other services, etc.
@@ -47,6 +47,11 @@ namespace Anti_Recoil_Application
             await AppHost!.StartAsync();
 
             var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
+
+            // Set the initial view to LoginUserControl via MainWindowViewModel
+            var mainWindowViewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
+            mainWindowViewModel.SwitchCurrentView(AppHost.Services.GetRequiredService<LoginViewModel>());
+
             mainWindow.Show();
 
             base.OnStartup(e);

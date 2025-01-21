@@ -139,6 +139,15 @@
                                    Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
+                        
+                        <!-- Trigger when the TextBox has text -->
+                        <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}"
+                                     Value="">
+                            <Setter TargetName="WatermarkText"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                        
                         <!-- Trigger for Focused state -->
                         <Trigger Property="IsFocused"
                                  Value="True">
@@ -153,13 +162,7 @@
                                     Property="Visibility"
                                     Value="Visible" />
                         </Trigger>
-                        <!-- Trigger when the TextBox has text -->
-                        <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}"
-                                     Value="">
-                            <Setter TargetName="WatermarkText"
-                                    Property="Visibility"
-                                    Value="Visible" />
-                        </DataTrigger>
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

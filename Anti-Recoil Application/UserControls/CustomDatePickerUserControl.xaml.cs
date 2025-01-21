@@ -16,6 +16,21 @@ namespace Anti_Recoil_Application.UserControls
                 typeof(CustomDatePickerUserControl),
                 new PropertyMetadata(false));
 
+        // Dependency Property for Selected Date
+        public static readonly DependencyProperty SelectedDateProperty =
+            DependencyProperty.Register(
+                nameof(SelectedDate),
+                typeof(DateTime?),
+                typeof(CustomDatePickerUserControl),
+                new PropertyMetadata(null));
+
+        public DateTime? SelectedDate
+        {
+            get { return (DateTime?)GetValue(SelectedDateProperty); }
+            set { SetValue(SelectedDateProperty, value); }
+        }
+
+
         public bool IsPopupOpen
         {
             get { return (bool)GetValue(IsPopupOpenProperty); }
@@ -39,6 +54,7 @@ namespace Anti_Recoil_Application.UserControls
             if (CalendarControl.SelectedDate.HasValue)
             {
                 DateTextBox.Content = CalendarControl.SelectedDate.Value.ToString("dd/MM/yyyy");
+                SelectedDate = CalendarControl.SelectedDate;  // Update the SelectedDate property
                 DatePopup.IsOpen = false; // Close the popup after selection
             }
         }

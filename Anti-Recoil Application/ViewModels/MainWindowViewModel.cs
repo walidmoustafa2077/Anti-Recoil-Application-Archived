@@ -1,20 +1,32 @@
-﻿using Anti_Recoil_Application.ViewModels.DialogViewModels;
+﻿using Anti_Recoil_Application.UserControls;
+using Anti_Recoil_Application.ViewModels.DialogViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Anti_Recoil_Application.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
 
-        private object _currentDialog;
+        private object? currentViewModel;
+        private object? _currentDialogViewModel;
 
         private bool _isDialogVisible;
         private bool _isLoading;
 
-        public object CurrentDialog
+  
+
+        public object? CurrentView
         {
-            get => _currentDialog;
-            set => SetProperty(ref _currentDialog, value);
+            get => currentViewModel;
+            set => SetProperty(ref currentViewModel, value);
         }
+
+        public object? CurrentDialog
+        {
+            get => _currentDialogViewModel;
+            set => SetProperty(ref _currentDialogViewModel, value);
+        }
+
 
         public bool IsDialogVisible
         {
@@ -30,28 +42,53 @@ namespace Anti_Recoil_Application.ViewModels
 
         // Add logic to update dialog visibility/content if needed
 
+        public void SwitchCurrentView(object? currentViewModel)
+        {
+            switch (currentViewModel)
+            {
+                case LoginViewModel loginViewModel:
+                    // Display the LoginUserControl with its DataContext set to LoginViewModel.
+                    CurrentView = new LoginUserControl();
+                    (CurrentView as LoginUserControl)!.DataContext = loginViewModel;
+                    break;
+
+                case RegisterViewModel registerViewModel:
+                    // Display the RegisterUserControl with its DataContext set to RegisterViewModel.
+                    CurrentView = new RegisterUserControl();
+                    (CurrentView as RegisterUserControl)!.DataContext = registerViewModel;
+                    break;
+
+                default:
+                    // Handle any unsupported view model type.
+                    throw new InvalidOperationException($"Unsupported view model: {currentViewModel.GetType().Name}");
+            }
+        }
+
+
+
+        public async Task ShowDialogAsync(MainDialogViewModel dialogViewModel)
+        {
+            var tcs = new TaskCompletionSource<bool>(); // Create a TaskCompletionSource
+
+            // Modify the CloseDialog action to complete the task when the dialog is closed
+            CurrentDialog = new UserControls.Dialogs.MainDialog { DataContext = dialogViewModel };
+            IsDialogVisible = true;
+
+            // Wait for the dialog to close before continuing
+            await tcs.Task;
+        }
+
         public void ShowDialog(object dialogViewModel, bool isRetyped)
         {
-            // Ensure that the dialogViewModel is set
-            //CurrentDialog = dialogViewModel;
-            //IsDialogVisible = true;
             if (dialogViewModel is EnterFieldDialogViewModel enterUsernameDialog)
             {
-                if (isRetyped)
-                {
-                    CurrentDialog = new UserControls.Dialogs.EnterRepeatedFieldDialog { DataContext = enterUsernameDialog };
-                    IsDialogVisible = true;
-                }
-                else
-                {
-                    CurrentDialog = new UserControls.Dialogs.EnterFieldDialog { DataContext = enterUsernameDialog };
-                    IsDialogVisible = true;
-                }
+                CurrentDialog = isRetyped
+                    ? new UserControls.Dialogs.EnterRepeatedFieldDialog { DataContext = enterUsernameDialog }
+                    : new UserControls.Dialogs.EnterFieldDialog(enterUsernameDialog);
             }
             else if (dialogViewModel is MainDialogViewModel dialog)
             {
                 CurrentDialog = new UserControls.Dialogs.MainDialog { DataContext = dialog };
-                IsDialogVisible = true;
             }
 
             IsDialogVisible = true;
@@ -63,5 +100,6 @@ namespace Anti_Recoil_Application.ViewModels
             CurrentDialog = null;
             IsDialogVisible = false;
         }
+
     }
 }

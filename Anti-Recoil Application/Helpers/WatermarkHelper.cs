@@ -5,11 +5,10 @@ namespace Anti_Recoil_Application.Helpers
     public static class WatermarkHelper
     {
         public static readonly DependencyProperty WatermarkTextProperty =
-            DependencyProperty.RegisterAttached(
-                "WatermarkText",
-                typeof(string),
-                typeof(WatermarkHelper),
-                new PropertyMetadata(string.Empty));
+       DependencyProperty.RegisterAttached(
+           "WatermarkText",
+           typeof(string),
+           typeof(WatermarkHelper));
 
         public static void SetWatermarkText(UIElement element, string value)
         {
@@ -20,5 +19,7 @@ namespace Anti_Recoil_Application.Helpers
         {
             return (string)element.GetValue(WatermarkTextProperty);
         }
+
+
     }
 }

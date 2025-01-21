@@ -1,22 +1,24 @@
 ﻿<UserControl x:Class="Anti_Recoil_Application.UserControls.RegisterUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Anti_Recoil_Application.UserControls"
              xmlns:helpers="clr-namespace:Anti_Recoil_Application.Helpers"
-             mc:Ignorable="d" >
+             mc:Ignorable="d">
     <Grid>
 
         <StackPanel Width="400"
                     Height="auto"
                     VerticalAlignment="Center">
+
             <ContentControl Margin="0 12"
                             Style="{StaticResource BrandNameIcon}"
                             Width="auto"
                             Height="auto"
                             Foreground="{StaticResource BrandAccentBrush}"
                             RenderTransformOrigin="0.5,0.5" />
+
             <TextBlock Text="Register new Account"
                        FontSize="18"
                        FontWeight="Bold"
@@ -29,63 +31,70 @@
                 <TextBox Width="190"
                          Style="{StaticResource PrimaryInputFieldStyle}"
                          helpers:WatermarkHelper.WatermarkText="Enter First Name"
-                         Margin="0,10,0,0" />
+                         Margin="0,10,0,0"
+                         Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" />
 
-                <!-- Last Name -->
                 <TextBox Width="200"
                          Style="{StaticResource PrimaryInputFieldStyle}"
                          helpers:WatermarkHelper.WatermarkText="Enter Last Name"
-                         Margin="10,10,0,0" />
+                         Margin="10,10,0,0"
+                         Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
 
 
             <!-- Username -->
             <TextBox Style="{StaticResource PrimaryInputFieldStyle}"
                      helpers:WatermarkHelper.WatermarkText="Enter Username"
-                     Margin="0,10,0,0" />
+                     Margin="0,10,0,0"
+                     Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- Email -->
             <TextBox Style="{StaticResource PrimaryInputFieldStyle}"
                      helpers:WatermarkHelper.WatermarkText="Enter Email"
-                     Margin="0,10,0,0" />
+                     Margin="0,10,0,0"
+                     Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- Password -->
-            <PasswordBox Style="{StaticResource NewPasswordBoxStyle}"
+            <PasswordBox x:Name="PasswordBox" Style="{StaticResource NewPasswordBoxStyle}"
                          helpers:WatermarkHelper.WatermarkText="Enter Password"
-                         Margin="0,10,0,0" />
+                         Margin="0,10,0,0"
+                         PasswordChanged="PasswordBox_PasswordChanged" />
 
             <!-- Confirm Password -->
-            <PasswordBox Style="{StaticResource NewPasswordBoxStyle}"
+            <PasswordBox x:Name="ConfirmPasswordBox" Style="{StaticResource NewPasswordBoxStyle}"
                          helpers:WatermarkHelper.WatermarkText="Confirm Password"
-                         Margin="0,10,0,0" />
+                         Margin="0,10,0,0"
+                         PasswordChanged="PasswordBox_PasswordChanged" />
 
             <StackPanel  Orientation="Horizontal">
                 <!-- Date of Birth Picker -->
                 <local:CustomDatePickerUserControl Width="190"
-                                        Height="36"
-                                        Margin="0 10 10 10" />
+                                                   Height="36"
+                                                   Margin="0 10 10 10"
+                                                   SelectedDate="{Binding DateOfBirth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <StackPanel Width="200">
-                    <!-- Country -->
                     <TextBox HorizontalAlignment="Stretch"
                              Style="{StaticResource PrimaryInputFieldStyle}"
                              helpers:WatermarkHelper.WatermarkText="Enter Country"
-                             Margin="0,10,0,0" />
-                    <!-- City -->
+                             Margin="0,10,0,0"
+                             Text="{Binding Country, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox Style="{StaticResource PrimaryInputFieldStyle}"
                              helpers:WatermarkHelper.WatermarkText="Enter City"
-                             Margin="0,10,0,0" />
+                             Margin="0,10,0,0"
+                             Text="{Binding City, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </StackPanel>
             <StackPanel>
                 <!-- Register Button -->
                 <Button Content="Register"
                         Style="{StaticResource PrimaryButtonStyle}"
-                        Margin="0,25,0,0" />
-                <!-- Register Button -->
+                        Margin="0,25,0,0"
+                        Command="{Binding RegisterCommand}"/>
                 <Button Content="Cancel"
                         Style="{StaticResource SecondaryButtonStyle}"
-                        Margin="0,10,0,0" />
+                        Margin="0,10,0,0"
+                        Command="{Binding CancelCommand}" />
             </StackPanel>
 
         </StackPanel>
