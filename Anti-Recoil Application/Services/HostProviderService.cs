@@ -107,8 +107,35 @@ namespace Anti_Recoil_Application.Services
                 }
 
                 // If login fails, show an error message
-                var errorMessage = await response.Content.ReadAsStringAsync();
                 _mainWindowViewModel.IsLoading = false;
+                var errorMessage = await response.Content.ReadAsStringAsync();
+
+                // if error is Email not confirmed. then show confirmation dialog CreateEnterFieldDialogViewModel
+                if (errorMessage.Contains("Email not confirmed"))
+                {
+               
+                    var dialogViewModel = _dialogService.CreateEnterFieldDialogViewModel(
+                        "Please, Enter Code Sent to Your Mail.",
+                        string.Empty,
+                        "Enter Verification Code",
+                        async (enteredText) =>
+                        {
+                            var isVerified = await VerifyUserAsync(username, enteredText);
+                            if (isVerified)
+                            {
+                                await _dialogService.ShowDialogAsync("Email verified successfully");
+                            }
+                            else
+                            {
+                                await _dialogService.ShowDialogAsync("Email verification failed");
+                            }
+                        });
+
+                    return (false, false); // Login failed, no connection issue
+                }
+
+
+
                 _dialogService.ShowDialog($"Login failed: {errorMessage}");
                 return (false, false); // Login failed, no connection issue
             }
@@ -155,6 +182,9 @@ namespace Anti_Recoil_Application.Services
                 else
                 {
                     _mainWindowViewModel.IsLoading = false;
+                    // If the response is not successful, show the error message
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
                     return null; // Return null in case of failed validation
                 }
             }
@@ -162,6 +192,7 @@ namespace Anti_Recoil_Application.Services
             {
                 // Log the exception (if necessary)
                 _mainWindowViewModel.IsLoading = false;
+                _dialogService.ShowDialog($"Validation failed: {ex.Message}");
 
                 // Optionally, you can log the exception message or show a generic error dialog
                 // Example: _dialogService.ShowDialog($"Error: {ex.Message}");
@@ -203,8 +234,10 @@ namespace Anti_Recoil_Application.Services
                 }
                 else
                 {
-
                     _mainWindowViewModel.IsLoading = false;
+                    // If the response is not successful, show the error message
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}"); 
                     return false;
 
                 }
@@ -213,6 +246,7 @@ namespace Anti_Recoil_Application.Services
             {
 
                 _mainWindowViewModel.IsLoading = false;
+                _dialogService.ShowDialog($"Validation failed: {ex.Message}");
                 return false;
 
             }
@@ -259,7 +293,9 @@ namespace Anti_Recoil_Application.Services
                 else
                 {
                     _mainWindowViewModel.IsLoading = false;
-
+                    // If the response is not successful, show the error message
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
                     return false;
                 }
             }
@@ -269,6 +305,7 @@ namespace Anti_Recoil_Application.Services
 
                 // Log the exception if necessary
                 // Optionally handle the error (e.g., show a generic error message)
+                _dialogService.ShowDialog($"Validation failed: {ex.Message}");
                 return false;
             }
         }
@@ -315,7 +352,9 @@ namespace Anti_Recoil_Application.Services
                 else
                 {
                     _mainWindowViewModel.IsLoading = false;
-
+                    // If the response is not successful, show the error message
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
                     return false;
                 }
             }
@@ -349,7 +388,9 @@ namespace Anti_Recoil_Application.Services
                     return await response.Content.ReadAsStringAsync();
                 }
 
-                _dialogService.ShowDialog($"Failed to fetch weapon data. Status code: {response.StatusCode}");
+                // If the response is not successful, show the error message
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
                 return null;
             }
             catch (Exception ex)
@@ -404,9 +445,9 @@ namespace Anti_Recoil_Application.Services
                 }
                 else
                 {
+                    _mainWindowViewModel.IsLoading = false;
                     // If the response is not successful, show the error message
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    _mainWindowViewModel.IsLoading = false;
                     await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
                     return (false, string.Empty);
                 }

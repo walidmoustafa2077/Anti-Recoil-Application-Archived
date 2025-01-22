@@ -9,6 +9,7 @@ namespace Anti_Recoil_Application.UserControls
     /// </summary>
     public partial class RegisterUserControl : UserControl
     {
+
         public RegisterUserControl()
         {
             InitializeComponent();

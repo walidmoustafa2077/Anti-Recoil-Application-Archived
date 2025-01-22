@@ -67,11 +67,25 @@
                          PasswordChanged="PasswordBox_PasswordChanged" />
 
             <StackPanel  Orientation="Horizontal">
-                <!-- Date of Birth Picker -->
-                <local:CustomDatePickerUserControl Width="190"
-                                                   Height="36"
-                                                   Margin="0 10 10 10"
-                                                   SelectedDate="{Binding DateOfBirth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                
+                <StackPanel>
+                    <!-- Date of Birth Picker -->
+                    <local:CustomDatePickerUserControl Width="190"
+                                                       Height="36"
+                                                       Margin="0 10 10 10"
+                                                       SelectedDate="{Binding DateOfBirth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <ComboBox Style="{StaticResource DropdownListStyle}"
+                              SelectedValue="{Binding SelectedGender}"
+                              SelectedValuePath="Content"
+                              Width="190"
+                              Height="26"
+                              Margin="0 0 10 10">
+                        <ComboBoxItem Content="Male" />
+                        <ComboBoxItem Content="Female" />
+                    </ComboBox>
+
+                </StackPanel>
+   
 
                 <StackPanel Width="200">
                     <TextBox HorizontalAlignment="Stretch"

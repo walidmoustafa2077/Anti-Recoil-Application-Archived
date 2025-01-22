@@ -26,6 +26,7 @@ namespace Anti_Recoil_Application.ViewModels
         private string _country;
         private string _city;
         private DateTime? _dateOfBirth;
+        private string _selectedGender;
 
         // First Name Property
         public string FirstName
@@ -144,7 +145,15 @@ namespace Anti_Recoil_Application.ViewModels
                 }
             }
         }
-
+        public string SelectedGender
+        {
+            get => _selectedGender;
+            set
+            {
+                _selectedGender = value;
+                OnPropertyChanged(nameof(SelectedGender)); // Notify property change if using INotifyPropertyChanged
+                }
+        }
         public ICommand RegisterCommand { get; }
         public ICommand CancelCommand { get; }
 
