@@ -57,7 +57,11 @@ namespace Anti_Recoil_Application.ViewModels
                     CurrentView = new RegisterUserControl();
                     (CurrentView as RegisterUserControl)!.DataContext = registerViewModel;
                     break;
-
+                case HomeViewModel homeViewModel:
+                    // Display the HomeUserControl with its DataContext set to HomeViewModel.
+                    CurrentView = new HomeUserControl();
+                    (CurrentView as HomeUserControl)!.DataContext = homeViewModel;
+                    break;
                 default:
                     // Handle any unsupported view model type.
                     throw new InvalidOperationException($"Unsupported view model: {currentViewModel.GetType().Name}");
@@ -94,6 +98,32 @@ namespace Anti_Recoil_Application.ViewModels
             IsDialogVisible = true;
         }
 
+        public async Task ShowDialogAsync(object dialogViewModel)
+        {
+            var tcs = new TaskCompletionSource<bool>(); // Create a TaskCompletionSource
+
+            if (dialogViewModel == null)
+                throw new ArgumentNullException(nameof(dialogViewModel));
+
+            // Map the dialogViewModel to the appropriate dialog
+            CurrentDialog = dialogViewModel switch
+            {
+                EnterFieldDialogViewModel enterFieldDialogViewModel =>
+                    new UserControls.Dialogs.EnterFieldDialog(enterFieldDialogViewModel),
+
+                MainDialogViewModel mainDialogViewModel =>
+                    new UserControls.Dialogs.MainDialog { DataContext = mainDialogViewModel },
+
+                _ => throw new InvalidOperationException($"Unsupported dialogViewModel type: {dialogViewModel.GetType().Name}")
+            };
+
+            IsDialogVisible = true;
+
+            // Optionally, await a delay for demonstration purposes or consistency
+            await tcs.Task;
+        }
+
+
         public void CloseDialog()
         {
             // Ensure that the dialogViewModel is cleared
@@ -101,5 +131,6 @@ namespace Anti_Recoil_Application.ViewModels
             IsDialogVisible = false;
         }
 
+  
     }
 }

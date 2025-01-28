@@ -28,8 +28,6 @@ namespace Anti_Recoil_Application
                             services.AddSingleton<HostProviderService>();
 
                             services.AddSingleton<LoginViewModel>();
-                            services.AddSingleton<RegisterViewModel>();
-
 
                             // Add other services, etc.
                             services.AddTransient<MainWindow>();

@@ -1,11 +1,17 @@
-﻿namespace GetPattern.Models
+﻿using System.Text.Json.Serialization;
+
+namespace GetPattern.Models
 {
     public class Weapon
     {
-        public string WeaponName { get; set; } = string.Empty;
+        [JsonPropertyName("weaponName")]
+        public string WeaponName { get; set; }
 
+        [JsonPropertyName("sensitivity")]
         public float Sensitivity { get; set; }
-        public string Pattern { get; set; } = string.Empty;
+
+        [JsonPropertyName("pattern")]
+        public string Pattern { get; set; }
 
     }
 }

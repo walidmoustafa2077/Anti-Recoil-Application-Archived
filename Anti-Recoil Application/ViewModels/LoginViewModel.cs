@@ -14,8 +14,12 @@ namespace Anti_Recoil_Application.ViewModels
         private readonly DialogService _dialogService;
         private readonly HostProviderService _hostProviderService;
         private readonly MainWindowViewModel _mainWindowViewModel;
-        private string _username;
-        private string _password;
+        private readonly RegisterViewModel _registerViewModel;
+        private readonly HomeViewModel _homeViewModel;
+
+
+        private string _username = string.Empty;
+        private string _password = string.Empty;
         private bool _isLoggingIn;
 
         public string Username
@@ -61,12 +65,21 @@ namespace Anti_Recoil_Application.ViewModels
             LoginCommand = new CommandBase(ExecuteLogin);
             ForgotPasswordCommand = new CommandBase(ExecuteForgotPassword);
             RegisterCommand = new CommandBase(ExecuteRegister);
+
+            _registerViewModel = new RegisterViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
+            _homeViewModel = new HomeViewModel(_dialogService, _hostProviderService);
+
         }
 
         private async void ExecuteLogin(object parameter)
         {
             try
             {
+                _homeViewModel.LoadWeaponsAsync();
+                _mainWindowViewModel.SwitchCurrentView(_homeViewModel);
+
+                return;
+
                 var (isAuthenticated, isConnectionIssue) = await _hostProviderService.AuthenticateAsync(Username, Password);
 
                 if (isConnectionIssue)
@@ -180,7 +193,7 @@ namespace Anti_Recoil_Application.ViewModels
 
         private void ExecuteRegister(object parameter)
         {
-            _mainWindowViewModel.SwitchCurrentView(App.AppHost?.Services.GetRequiredService<RegisterViewModel>());
+            _mainWindowViewModel.SwitchCurrentView(_registerViewModel);
         }
     }
 }

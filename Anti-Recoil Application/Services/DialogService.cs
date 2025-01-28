@@ -22,6 +22,12 @@ namespace Anti_Recoil_Application.Services
             _mainWindowViewModel.ShowDialog(dialogViewModel, true);
         }
 
+
+        public async Task ShowDialogAsync(object dialogViewModel)
+        {
+            await _mainWindowViewModel.ShowDialogAsync(dialogViewModel);
+        }
+
         public void ShowDialog(string message)
         {
             var dialogViewModel = new MainDialogViewModel(() => CloseDialog())

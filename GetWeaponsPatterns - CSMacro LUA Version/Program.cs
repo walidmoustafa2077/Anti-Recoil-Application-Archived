@@ -72,7 +72,7 @@ internal class Program
 
         var existingWeapon = await weaponService.GetWeaponByNameAsync(weaponName); // Await the Task here
 
-        if (existingWeapon != null)
+        if (existingWeapon != null && existingWeapon.WeaponName == weaponName)
         {
             Console.WriteLine($"Weapon '{weaponName}' already exists.");
             Console.WriteLine("Do you want to update it? (yes/no)");

@@ -174,7 +174,7 @@ namespace Anti_Recoil_Application.ViewModels
             // Validate the user input
             if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName) || string.IsNullOrEmpty(Username) ||
                 string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(ConfirmPassword) ||
-                string.IsNullOrEmpty(Country) || string.IsNullOrEmpty(City) || !DateOfBirth.HasValue)
+                string.IsNullOrEmpty(Country) || string.IsNullOrEmpty(City) || !DateOfBirth.HasValue || string.IsNullOrEmpty(SelectedGender))
             {
                 // Show error message if any required field is empty
                 _dialogService.ShowDialog("Please fill in all required fields.");
@@ -232,42 +232,26 @@ namespace Anti_Recoil_Application.ViewModels
                 Username,
                 Email,
                 Password,
-                DateOfBirth
+                DateOfBirth,
+                SelectedGender,
+                Country,
+                City,
+                this
             );
 
             if (registrationSuccess)
             {
                 // Handle successful registration (e.g., switch to login screen)
-                ShowConfirmationDialog(email);
-            }
-            else
-            {
-                // Handle failed registration (e.g., show error message)
-                _dialogService.ShowDialog("Registration failed. Please try again.");
+                _mainWindowViewModel.SwitchCurrentView(App.AppHost?.Services.GetRequiredService<LoginViewModel>());
             }
         }
 
-        private void ShowConfirmationDialog(string email)
+        public void HasRegistered()
         {
-            var confirmationDialogViewModel = _dialogService.CreateEnterFieldDialogViewModel(
-                "Please, Enter Code Sent to Your Mail.",
-                string.Empty,
-                "Enter your code.",
-                async (enteredText) =>
-                {
-                    // Check if the entered code is valid
-                    var isCodeValid = await _hostProviderService.ValidateVerificationCodeAsync(email, enteredText);
-
-                    if (isCodeValid)
-                    {
-                        _mainWindowViewModel.SwitchCurrentView(App.AppHost?.Services.GetRequiredService<LoginViewModel>());
-
-                    }
-                }
-            );
-
-            _dialogService.ShowDialog(confirmationDialogViewModel);
+            // Handle successful registration (e.g., switch to login screen)
+            _mainWindowViewModel.SwitchCurrentView(App.AppHost?.Services.GetRequiredService<LoginViewModel>());
         }
+
 
         private void ExecuteCancel(object obj)
         {

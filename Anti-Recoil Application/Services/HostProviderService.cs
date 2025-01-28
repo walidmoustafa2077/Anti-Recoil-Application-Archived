@@ -2,6 +2,7 @@
 using Anti_Recoil_Application.Models;
 using Anti_Recoil_Application.ViewModels;
 using Anti_Recoil_Application.ViewModels.DialogViewModels;
+using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -113,7 +114,7 @@ namespace Anti_Recoil_Application.Services
                 // if error is Email not confirmed. then show confirmation dialog CreateEnterFieldDialogViewModel
                 if (errorMessage.Contains("Email not confirmed"))
                 {
-               
+
                     var dialogViewModel = _dialogService.CreateEnterFieldDialogViewModel(
                         "Please, Enter Code Sent to Your Mail.",
                         string.Empty,
@@ -130,6 +131,9 @@ namespace Anti_Recoil_Application.Services
                                 await _dialogService.ShowDialogAsync("Email verification failed");
                             }
                         });
+
+
+                    await _dialogService.ShowDialogAsync(dialogViewModel);
 
                     return (false, false); // Login failed, no connection issue
                 }
@@ -208,7 +212,7 @@ namespace Anti_Recoil_Application.Services
             {
                 _mainWindowViewModel.IsLoading = true;
 
-                
+
                 var isConnected = await IsConnectedAsync();
                 if (!isConnected)
                 {
@@ -237,7 +241,7 @@ namespace Anti_Recoil_Application.Services
                     _mainWindowViewModel.IsLoading = false;
                     // If the response is not successful, show the error message
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}"); 
+                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
                     return false;
 
                 }
@@ -400,14 +404,19 @@ namespace Anti_Recoil_Application.Services
             }
         }
 
-        public async Task<(bool, string)> RegisterNewUser(string firstName, string lastName, string username, string email, string password, DateTime? dateOfBirth)
+        public async Task<(bool, string)> RegisterNewUser(string firstName, string lastName, string username, string email, string password, DateTime? dateOfBirth, string selectedGender, string country, string city, RegisterViewModel registerViewModel)
         {
             try
             {
                 _mainWindowViewModel.IsLoading = true;
 
                 var isConnected = await IsConnectedAsync();
-                if (!isConnected) return (false, string.Empty);
+                if (!isConnected)
+                {
+                    _mainWindowViewModel.IsLoading = false;
+
+                    return (false, string.Empty);
+                }
 
                 // Create the request object that matches the RegisterUserRequestDTO structure
                 var request = new
@@ -419,9 +428,9 @@ namespace Anti_Recoil_Application.Services
                     Password = password,
                     RetypedPassword = password, // Assuming password and retyped password should be the same
                     DateOfBirth = dateOfBirth,
-                    Country = string.Empty, // You can set this based on your form fields if available
-                    City = string.Empty, // You can set this based on your form fields if available
-                    Gender = string.Empty // Optional, you can pass gender if required
+                    Country = selectedGender,
+                    City = country,
+                    Gender = city
                 };
 
                 // Serialize the request object to JSON
@@ -431,26 +440,58 @@ namespace Anti_Recoil_Application.Services
                 // Send the POST request to the Register API endpoint
                 var response = await _httpClient.PostAsync($"{_baseApiUrl}/Authentication/register", content);
 
+                _mainWindowViewModel.IsLoading = false;
+
                 if (response.IsSuccessStatusCode)
                 {
-                    // If successful, deserialize the response to get the user DTO
-                    var userDto = await response.Content.ReadFromJsonAsync<User>();
 
-                    _mainWindowViewModel.IsLoading = false;
+                    var registerResponse = await response.Content.ReadFromJsonAsync<RegisterResponse>();
+                    if (registerResponse?.User != null)
+                    {
 
-                    // Log user created successfully
-                    await _dialogService.ShowDialogAsync($"User registered successfully: {userDto?.Username}"); // Wait for dialog to close
+                        var dialogViewModel = _dialogService.CreateEnterFieldDialogViewModel(
+                        "Please, Enter Code Sent to Your Mail.",
+                        string.Empty,
+                        "Enter Verification Code",
+                        async (enteredText) =>
+                        {
+                            var isVerified = await VerifyUserAsync(username, enteredText);
+                            if (isVerified)
+                            {
+                                var dialogViewModel = new MainDialogViewModel(() =>
+                                {
 
-                    return (true, userDto.Email);
+                                    registerViewModel.HasRegistered();
+                                    _dialogService.CloseDialog();
+                                })
+                                {
+                                    HeaderText = "Email verified successfully",
+                                    ButtonText = "Close"
+                                };
+                                await _dialogService.ShowDialogAsync(dialogViewModel);
+                            }
+                            else
+                            {
+                                await _dialogService.ShowDialogAsync("Email verification failed");
+                            }
+                        });
+
+
+                        await _dialogService.ShowDialogAsync(dialogViewModel);
+
+
+                        return (true, registerResponse.User.Email);
+                    }
+                    await _dialogService.ShowDialogAsync("User registration successful, but user details are missing.");
+                    return (true, string.Empty);
                 }
                 else
                 {
-                    _mainWindowViewModel.IsLoading = false;
-                    // If the response is not successful, show the error message
                     var errorMessage = await response.Content.ReadAsStringAsync();
                     await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
                     return (false, string.Empty);
                 }
+
             }
             catch (Exception ex)
             {
@@ -515,6 +556,56 @@ namespace Anti_Recoil_Application.Services
             }
         }
 
+        public async Task<List<Weapon>> GetWeaponsAsync()
+        {
+            try
+            {
+                _mainWindowViewModel.IsLoading = true;
+
+                // Check connectivity
+                var isConnected = await IsConnectedAsync();
+                if (!isConnected)
+                {
+                    _dialogService.ShowDialog("No internet connection. Please check your network settings.");
+                    return new List<Weapon>();
+                }
+
+                // Clear headers and make API call
+                _httpClient.DefaultRequestHeaders.Clear();
+                var response = await _httpClient.GetAsync($"{_baseApiUrl}/Weapons");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Read and deserialize response content
+                    var weapons = await response.Content.ReadFromJsonAsync<List<Weapon>>();
+                    return weapons ?? new List<Weapon>(); // Handle null case
+                }
+
+                // Log and notify about HTTP error
+                _dialogService.ShowDialog($"Failed to fetch weapons. Status Code: {response.StatusCode}");
+                return new List<Weapon>();
+            }
+            catch (HttpRequestException httpEx)
+            {
+                _dialogService.ShowDialog($"Network error while fetching weapon data: {httpEx.Message}");
+            }
+            catch (JsonException jsonEx)
+            {
+                _dialogService.ShowDialog($"Error parsing weapon data: {jsonEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                _dialogService.ShowDialog($"Unexpected error: {ex.Message}");
+            }
+            finally
+            {
+                // Ensure IsLoading is reset regardless of outcome
+                _mainWindowViewModel.IsLoading = false;
+            }
+
+            return new List<Weapon>(); // Return an empty list in case of error
+        }
+
 
         private void StoreToken(string token)
         {
@@ -526,6 +617,7 @@ namespace Anti_Recoil_Application.Services
             // e.g., for web applications, you can use localStorage or sessionStorage
         }
 
-  
+
+
     }
 }

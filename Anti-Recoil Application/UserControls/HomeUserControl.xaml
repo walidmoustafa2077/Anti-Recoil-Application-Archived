@@ -13,56 +13,70 @@
 
         <StackPanel Margin="8 0"
                     VerticalAlignment="Bottom">
-            <ListView Name="WeaponListView"
-                      Height="262"
-                      Width="800"
-                      VerticalAlignment="Bottom"
-                      ItemTemplate="{StaticResource WeaponChartTemplate}"
-                      ItemsSource="{Binding Weapons}"
-                      SelectedItem="{Binding SelectedWeapon, Mode=TwoWay}"
-                      Background="Transparent"
-                      BorderBrush="Transparent"
-                      SelectionMode="Single"
-                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      VirtualizingStackPanel.VirtualizationMode="Recycling"
-                      PreviewMouseWheel="ListView_PreviewMouseWheel">
+            <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          PreviewMouseWheel="ListView_PreviewMouseWheel"
+                          ScrollViewer.CanContentScroll="True"
+                          VerticalAlignment="Bottom"
+                          Height="262"
+                          Width="760"
+                          RenderTransformOrigin="0.5,0.5">
+                <ScrollViewer.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform />
+                        <SkewTransform />
+                        <RotateTransform />
+                        <TranslateTransform X="-12" />
+                    </TransformGroup>
+                </ScrollViewer.RenderTransform>
+                <ListView Name="WeaponListView"
+                          ItemTemplate="{StaticResource WeaponChartTemplate}"
+                          ItemsSource="{Binding Weapons}"
+                          SelectedItem="{Binding SelectedWeapon, Mode=TwoWay}"
+                          Background="Transparent"
+                          BorderBrush="Transparent"
+                          SelectionMode="Single"
+                          HorizontalAlignment="Stretch"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          ScrollViewer.CanContentScroll="False">
 
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-                <ListView.Resources>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="Foreground"
-                                Value="Transparent" />
-                        <Setter Property="BorderBrush"
-                                Value="#121213" />
-                        <Setter Property="BorderThickness"
-                                Value="0" />
-                        <Setter Property="Cursor"
-                                Value="Hand" />
-                        <Setter Property="FocusVisualStyle"
-                                Value="{x:Null}" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListViewItem">
-                                    <Border>
-                                        <Grid Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center"
-                                                              HorizontalAlignment="Left" />
-                                        </Grid>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListView.Resources>
-            </ListView>
+                    <ListView.Resources>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Foreground"
+                                    Value="Transparent" />
+                            <Setter Property="BorderBrush"
+                                    Value="#121213" />
+                            <Setter Property="BorderThickness"
+                                    Value="0" />
+                            <Setter Property="Cursor"
+                                    Value="Hand" />
+                            <Setter Property="FocusVisualStyle"
+                                    Value="{x:Null}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <Border>
+                                            <Grid Background="{TemplateBinding Background}">
+                                                <ContentPresenter VerticalAlignment="Center"
+                                                                  HorizontalAlignment="Left" />
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.Resources>
+                </ListView>
+
+            </ScrollViewer>
         </StackPanel>
 
         <StackPanel VerticalAlignment="Top"

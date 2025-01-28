@@ -1436,7 +1436,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
+    <!-- DropdwonListStyle -->
     <Style x:Key="DropdownListStyle"
            TargetType="ComboBox">
         <Setter Property="Background"
@@ -1545,5 +1546,74 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- ItemTemplate for Weapon Chart -->
+<DataTemplate x:Key="WeaponChartTemplate">
+    <Border Width="240"
+            Height="228"
+            Background="{StaticResource BrushPrimary}"
+            BorderBrush="{StaticResource BrushSecondary}"
+            BorderThickness="1.5"
+            CornerRadius="20"
+            Padding="15"
+            Margin="4">
+        <StackPanel>
+            <!-- Weapon Header (Name) -->
+            <TextBlock Text="{Binding WeaponName}"
+                       FontFamily="Consolas"
+                       HorizontalAlignment="Center"
+                       FontSize="22"
+                       Foreground="{StaticResource BrushAccent}"
+                       Margin="0 12 0 0" />
+
+            <!-- Weapon Image -->
+            <Image Source="{Binding WeaponImage}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Height="80"
+                   Margin="10 22 10 2" />
+
+            <!-- In-Chart Elements -->
+            <Border BorderBrush="{StaticResource BrushSecondary}"
+                    Background="{StaticResource BrushQuaternary}"
+                    BorderThickness="1.5"
+                    CornerRadius="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Shortcut Text -->
+                    <StackPanel Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                        <TextBlock Text="Shortcut: "
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   Foreground="{StaticResource BrushAccent}"
+                                   Margin="0 5" />
+                        <TextBlock Text="{Binding Shortcut}"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   Foreground="{StaticResource BrushAccent}"
+                                   Margin="5 5" />
+                    </StackPanel>
+
+                    <!-- Switch Button -->
+                    <CheckBox Style="{StaticResource SwitchCheckBoxStyle}"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding IsActive, Mode=TwoWay}"
+                              Command="{Binding DataContext.ActivateWeaponCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                              CommandParameter="{Binding}"
+                              Grid.Column="1"
+                              Margin="10"
+                              Foreground="{StaticResource BrushAccent}" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </Border>
+</DataTemplate>
 
 </ResourceDictionary>

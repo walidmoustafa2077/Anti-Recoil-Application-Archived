@@ -12,13 +12,8 @@
   <ItemGroup>
     <None Remove="Resources\Brand\Name.svg" />
     <None Remove="Resources\Images\Wallpapers\Main.png" />
-    <None Remove="Resources\Images\Weapons\AKM.png" />
-    <None Remove="Resources\Images\Weapons\FSCR.png" />
-    <None Remove="Resources\Images\Weapons\LUIS.png" />
     <None Remove="Resources\Images\Weapons\M11.png" />
     <None Remove="Resources\Images\Weapons\M60.png" />
-    <None Remove="Resources\Images\Weapons\SHrk-50.png" />
-    <None Remove="Resources\Images\Weapons\UPS.png" />
     <None Remove="Resources\SVGs\Icons\User.svg" />
     <None Remove="Resources\SVGs\Loading.svg" />
   </ItemGroup>
@@ -30,26 +25,26 @@
     <Content Include="Resources\Images\Wallpapers\Main.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\Images\Weapons\AKM.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Resource Include="Resources\Images\Weapons\AK-47.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\Weapons\FSCR.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Resource Include="Resources\Images\Weapons\FCAR.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\Weapons\LUIS.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Resource Include="Resources\Images\Weapons\LEWIS-GUN.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\Weapons\M11.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\Weapons\M60.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\Weapons\SHrk-50.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Resource Include="Resources\Images\Weapons\SHAK-50.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\Weapons\UPS.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Resource Include="Resources\Images\Weapons\XP-54.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\SVGs\Loading.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
