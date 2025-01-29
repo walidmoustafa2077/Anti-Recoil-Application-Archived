@@ -1,4 +1,6 @@
-﻿using Anti_Recoil_Application.UserControls;
+﻿using Anti_Recoil_Application.Core.Services;
+using Anti_Recoil_Application.Services;
+using Anti_Recoil_Application.UserControls;
 using Anti_Recoil_Application.ViewModels.DialogViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,13 +9,12 @@ namespace Anti_Recoil_Application.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
 
+
         private object? currentViewModel;
         private object? _currentDialogViewModel;
 
         private bool _isDialogVisible;
         private bool _isLoading;
-
-  
 
         public object? CurrentView
         {
@@ -84,19 +85,19 @@ namespace Anti_Recoil_Application.ViewModels
 
         public void ShowDialog(object dialogViewModel, bool isRetyped)
         {
-            if (dialogViewModel is EnterFieldDialogViewModel enterUsernameDialog)
+            CurrentDialog = dialogViewModel switch
             {
-                CurrentDialog = isRetyped
+                EnterFieldDialogViewModel enterUsernameDialog => isRetyped
                     ? new UserControls.Dialogs.EnterRepeatedFieldDialog { DataContext = enterUsernameDialog }
-                    : new UserControls.Dialogs.EnterFieldDialog(enterUsernameDialog);
-            }
-            else if (dialogViewModel is MainDialogViewModel dialog)
-            {
-                CurrentDialog = new UserControls.Dialogs.MainDialog { DataContext = dialog };
-            }
+                    : new UserControls.Dialogs.EnterFieldDialog(enterUsernameDialog),
+                ErrorDialogViewModel errorDialog => new UserControls.Dialogs.ErrorDialog { DataContext = errorDialog },
+                MainDialogViewModel dialog => new UserControls.Dialogs.MainDialog { DataContext = dialog },
+                _ => throw new ArgumentException("Unsupported dialog view model type.", nameof(dialogViewModel))
+            };
 
             IsDialogVisible = true;
         }
+
 
         public async Task ShowDialogAsync(object dialogViewModel)
         {
@@ -110,7 +111,8 @@ namespace Anti_Recoil_Application.ViewModels
             {
                 EnterFieldDialogViewModel enterFieldDialogViewModel =>
                     new UserControls.Dialogs.EnterFieldDialog(enterFieldDialogViewModel),
-
+                ErrorDialogViewModel errorDialogViewModel =>
+                    new UserControls.Dialogs.ErrorDialog { DataContext = errorDialogViewModel },
                 MainDialogViewModel mainDialogViewModel =>
                     new UserControls.Dialogs.MainDialog { DataContext = mainDialogViewModel },
 

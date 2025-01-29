@@ -1,10 +1,7 @@
 ﻿using Anti_Recoil_Application.Commands;
 using Anti_Recoil_Application.Models;
 using Anti_Recoil_Application.Services;
-using Anti_Recoil_Application.UserControls;
-using Anti_Recoil_Application.UserControls.Dialogs;
 using Anti_Recoil_Application.ViewModels.DialogViewModels;
-using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Input;
 
 namespace Anti_Recoil_Application.ViewModels
@@ -21,6 +18,22 @@ namespace Anti_Recoil_Application.ViewModels
         private string _username = string.Empty;
         private string _password = string.Empty;
         private bool _isLoggingIn;
+
+        public LoginViewModel(DialogService dialogService, HostProviderService loginService, MainWindowViewModel mainWindowViewModel)
+        {
+            _dialogService = dialogService;
+            _hostProviderService = loginService;
+            _mainWindowViewModel = mainWindowViewModel;
+
+            LoginCommand = new CommandBase(ExecuteLogin);
+            ForgotPasswordCommand = new CommandBase(ExecuteForgotPassword);
+            RegisterCommand = new CommandBase(ExecuteRegister);
+
+            _registerViewModel = new RegisterViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
+
+            _homeViewModel = new HomeViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
+
+        }
 
         public string Username
         {
@@ -56,52 +69,28 @@ namespace Anti_Recoil_Application.ViewModels
         public ICommand ForgotPasswordCommand { get; }
         public ICommand RegisterCommand { get; }
 
-        public LoginViewModel(DialogService dialogService, HostProviderService loginService, MainWindowViewModel mainWindowViewModel)
-        {
-            _dialogService = dialogService;
-            _hostProviderService = loginService;
-            _mainWindowViewModel = mainWindowViewModel;
 
-            LoginCommand = new CommandBase(ExecuteLogin);
-            ForgotPasswordCommand = new CommandBase(ExecuteForgotPassword);
-            RegisterCommand = new CommandBase(ExecuteRegister);
 
-            _registerViewModel = new RegisterViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
-            _homeViewModel = new HomeViewModel(_dialogService, _hostProviderService);
-
-        }
 
         private async void ExecuteLogin(object parameter)
         {
-            try
+            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
             {
-                _homeViewModel.LoadWeaponsAsync();
-                _mainWindowViewModel.SwitchCurrentView(_homeViewModel);
+                _dialogService.ShowDialog("Please enter your username and password.");
+                return;
+            }
+            var (isAuthenticated, isConnectionIssue) = await _hostProviderService.AuthenticateAsync(Username, Password);
 
+            if (isConnectionIssue || !isAuthenticated)
                 return;
 
-                var (isAuthenticated, isConnectionIssue) = await _hostProviderService.AuthenticateAsync(Username, Password);
+            SwitchToHomeView();
+        }
 
-                if (isConnectionIssue)
-                    return;
-
-                var dialogViewModel = new MainDialogViewModel(() =>
-                {
-                    _dialogService.CloseDialog();
-                })
-                {
-                    HeaderText = isAuthenticated ? "Login successful!" : "Invalid username or password.",
-                    ButtonText = isAuthenticated ? "Close" : "Retry"
-                };
-
-                IsLoggingIn = true;
-
-                _dialogService.ShowDialog(dialogViewModel);
-            }
-            finally
-            {
-                IsLoggingIn = false;
-            }
+        private void SwitchToHomeView()
+        {
+            _homeViewModel.LoadWeaponsAsync();
+            _mainWindowViewModel.SwitchCurrentView(_homeViewModel);
         }
 
         private void ExecuteForgotPassword(object obj)
@@ -112,7 +101,6 @@ namespace Anti_Recoil_Application.ViewModels
                 "Enter Username or Email",
                 async (enteredText) =>
                 {
-
 
                     // Check if enteredText is a valid Username or Email
                     var user = await _hostProviderService.ValidateUsernameOrEmailAsync(enteredText);
@@ -130,14 +118,7 @@ namespace Anti_Recoil_Application.ViewModels
                             _mainWindowViewModel.IsLoading = false;
 
                         }
-                        else
-                        {
-                            // Handle the case where sending the code fails (e.g., show an error message)
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where enteredText is invalid (e.g., show an error message)
+          
                     }
                 }
             );
@@ -161,10 +142,6 @@ namespace Anti_Recoil_Application.ViewModels
                         _mainWindowViewModel.IsLoading = true;
                         ShowForgotPasswordDialog(user, enteredText);
                         _mainWindowViewModel.IsLoading = false;
-
-                    }
-                    else
-                    {
 
                     }
                 }

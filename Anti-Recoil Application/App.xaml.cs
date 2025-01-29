@@ -1,4 +1,5 @@
-﻿using Anti_Recoil_Application.Services;
+﻿using Anti_Recoil_Application.Core.Services;
+using Anti_Recoil_Application.Services;
 using Anti_Recoil_Application.UserControls;
 using Anti_Recoil_Application.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,10 +25,9 @@ namespace Anti_Recoil_Application
                             // Register your ViewModels, Views, and Services
                             services.AddSingleton<MainWindowViewModel>();
 
+                            services.AddSingleton<SettingsService>();
                             services.AddSingleton<DialogService>();
                             services.AddSingleton<HostProviderService>();
-
-                            services.AddSingleton<LoginViewModel>();
 
                             // Add other services, etc.
                             services.AddTransient<MainWindow>();
@@ -45,10 +45,31 @@ namespace Anti_Recoil_Application
             await AppHost!.StartAsync();
 
             var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
+            var settingsService = AppHost.Services.GetRequiredService<SettingsService>();
+            var dialogService = AppHost.Services.GetRequiredService<DialogService>();
+            var hostProviderService = AppHost.Services.GetRequiredService<HostProviderService>();
 
             // Set the initial view to LoginUserControl via MainWindowViewModel
             var mainWindowViewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
-            mainWindowViewModel.SwitchCurrentView(AppHost.Services.GetRequiredService<LoginViewModel>());
+
+            settingsService.Load();
+
+            // get token from settings
+            var token = settingsService.Settings.Token;
+
+            if (string.IsNullOrEmpty(token))
+            {
+                // If the token is empty, display the LoginUserControl
+                var loginViewModel = new LoginViewModel(dialogService, hostProviderService, mainWindowViewModel);
+                mainWindowViewModel.SwitchCurrentView(loginViewModel);
+            }
+            else
+            {
+                // If the token is not empty, display the HomeUserControl
+                var homeViewModel = new HomeViewModel(dialogService, hostProviderService, mainWindowViewModel);
+                homeViewModel.LoadWeaponsAsync();
+                mainWindowViewModel.SwitchCurrentView(homeViewModel);
+            }
 
             mainWindow.Show();
 

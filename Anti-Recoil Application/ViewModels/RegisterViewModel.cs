@@ -28,6 +28,18 @@ namespace Anti_Recoil_Application.ViewModels
         private DateTime? _dateOfBirth;
         private string _selectedGender;
 
+
+        public RegisterViewModel(DialogService dialogService, HostProviderService hostProviderService, MainWindowViewModel mainWindowViewModel)
+        {
+            _dialogService = dialogService;
+            _hostProviderService = hostProviderService;
+            _mainWindowViewModel = mainWindowViewModel;
+
+            RegisterCommand = new CommandBase(ExecuteRegister);
+            CancelCommand = new CommandBase(ExecuteCancel);
+        }
+
+
         // First Name Property
         public string FirstName
         {
@@ -156,16 +168,6 @@ namespace Anti_Recoil_Application.ViewModels
         }
         public ICommand RegisterCommand { get; }
         public ICommand CancelCommand { get; }
-
-        public RegisterViewModel(DialogService dialogService, HostProviderService hostProviderService, MainWindowViewModel mainWindowViewModel)
-        {
-            _dialogService = dialogService;
-            _hostProviderService = hostProviderService;
-            _mainWindowViewModel = mainWindowViewModel;
-
-            RegisterCommand = new CommandBase(ExecuteRegister);
-            CancelCommand = new CommandBase(ExecuteCancel);
-        }
 
 
 

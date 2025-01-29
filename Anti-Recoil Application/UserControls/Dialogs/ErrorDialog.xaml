@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="Anti_Recoil_Application.UserControls.Dialogs.ErrorDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Anti_Recoil_Application.UserControls.Dialogs"
+             mc:Ignorable="d" >
+    
+    <Border CornerRadius="10"
+            BorderBrush="{StaticResource BrushTertiary}"
+            BorderThickness="1.5"
+            Background="{StaticResource BrushPrimary}"
+            Width="Auto"
+            Height="Auto">
+        <Grid Margin="10">
+            <StackPanel>
+                <!-- Header -->
+                <TextBlock x:Name="HeaderText"
+                           Margin="12"
+                           MaxWidth="400"
+                           HorizontalAlignment="Center"
+                           Text="{Binding HeaderText}"
+                           TextAlignment="Center"
+                           FontWeight="Bold"
+                           Style="{StaticResource LabelStyle}"
+                           TextWrapping="Wrap" />
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <!-- Button -->
+                    <Button x:Name="ActionButton"
+                            Content="{Binding ButtonText}"
+                            MinWidth="140"
+                            Height="35"
+                            Margin="8 8 4 8"
+                            Command="{Binding ButtonCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+
+                    <!-- Button -->
+                    <Button x:Name="SecoundActionButton"
+                            Content="{Binding SecondButtonText}"
+                            MinWidth="140"
+                            Height="35"
+                            Margin="4 8 8 8"
+                            Command="{Binding SecondButtonCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Visibility="{Binding IsSecondButtonVisible}" />
+                </StackPanel>
+         
+            </StackPanel>
+
+        </Grid>
+    </Border>
+</UserControl>

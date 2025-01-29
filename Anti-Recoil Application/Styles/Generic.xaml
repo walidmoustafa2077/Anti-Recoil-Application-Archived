@@ -515,7 +515,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="IconPath">
+                    <Grid x:Name="IconPath"
+                          Background="Transparent">
                         <ContentControl Content="{TemplateBinding Content}" />
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -559,7 +560,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="IconPath">
+                    <Grid x:Name="IconPath"
+                          Background="Transparent">
                         <Path StrokeThickness="3"
                               Stroke="{StaticResource BrushAccent}"
                               StrokeStartLineCap="Round"
@@ -611,7 +613,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="IconPath">
+                    <Grid x:Name="IconPath"
+                          Background="Transparent">
                         <Path StrokeThickness="3"
                               Stroke="{StaticResource BrushAccent}"
                               StrokeStartLineCap="Round"

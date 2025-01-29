@@ -8,6 +8,11 @@ namespace Anti_Recoil_Application.ViewModels.DialogViewModels
         private string _headerText = "Default Header";
         private string _buttonText = "Submit";
 
+        public MainDialogViewModel(Action onButtonClick)
+        {
+            ButtonCommand = new CommandBase(_ => onButtonClick?.Invoke());
+        }
+
         public string HeaderText
         {
             get => _headerText;
@@ -22,10 +27,7 @@ namespace Anti_Recoil_Application.ViewModels.DialogViewModels
 
         public ICommand ButtonCommand { get; }
 
-        public MainDialogViewModel(Action onButtonClick)
-        {
-            ButtonCommand = new CommandBase(_ => onButtonClick?.Invoke());
-        }
+
 
     }
 }

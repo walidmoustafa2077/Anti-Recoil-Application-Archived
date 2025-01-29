@@ -1,10 +1,10 @@
 ﻿using Anti_Recoil_Application.Commands;
+using Anti_Recoil_Application.Core.Services;
 using Anti_Recoil_Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
+using System.Net.Http;
+using System.Windows;
 
 namespace Anti_Recoil_Application.ViewModels
 {
@@ -12,12 +12,34 @@ namespace Anti_Recoil_Application.ViewModels
     {
         private readonly HostProviderService _hostProviderService;
         private readonly DialogService _dialogService;
+        private readonly CoreService _coreService;
+        private readonly MainWindowViewModel _mainWindowViewModel;
+        private string licenseType = $"Pro";
 
         private WeaponViewModel _selectedWeapon = new WeaponViewModel();
 
-        public ObservableCollection<WeaponViewModel> Weapons { get; set; } = new ObservableCollection<WeaponViewModel>();
+        private bool _isActivateChecked;
 
-        public CommandBase ActivateWeaponCommand { get; }
+        private DateTime? _startTime;
+
+        public HomeViewModel(DialogService dialogService, HostProviderService hostProviderService, MainWindowViewModel mainWindowViewModel)
+        {
+            _dialogService = dialogService;
+            _hostProviderService = hostProviderService;
+
+            _coreService = new CoreService(this);
+
+            ActivateWeaponCommand = new CommandBase(ActivateWeapon);
+            _mainWindowViewModel = mainWindowViewModel;
+        }
+
+        public string LicenseType
+        {
+            get => licenseType;
+            set => SetProperty(ref licenseType, value, nameof(LicenseType));
+        }
+
+        public ObservableCollection<WeaponViewModel> Weapons { get; set; } = new ObservableCollection<WeaponViewModel>();
 
         public WeaponViewModel SelectedWeapon
         {
@@ -26,25 +48,90 @@ namespace Anti_Recoil_Application.ViewModels
             {
                 if (SetProperty(ref _selectedWeapon, value, nameof(SelectedWeapon)) && value != null)
                 {
-                    // Set IsActive to true when SelectedWeapon is not null
-                    // Update activation status for all weapons
-                    foreach (var w in Weapons)
+                    // Use the Dispatcher to safely update data-bound properties
+                    if (Application.Current.Dispatcher.CheckAccess())
                     {
-                        w.IsActive = w == value;
+                        // If already on the UI thread, update directly
+                        // Update activation status for all weapons
+                        foreach (var w in Weapons)
+                        {
+                            w.IsActive = w == value;
+                        }
+                    }
+                    else
+                    {
+                        // Marshal the update to the UI thread
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            // Update activation status for all weapons
+                            foreach (var w in Weapons)
+                            {
+                                w.IsActive = w == value;
+                            }
+                        });
                     }
                 }
             }
         }
 
 
-        public HomeViewModel(DialogService dialogService, HostProviderService hostProviderService)
+        public bool IsActivateChecked
         {
-            _dialogService = dialogService;
-            _hostProviderService = hostProviderService;
-
-            ActivateWeaponCommand = new CommandBase(ActivateWeapon);
-
+            get => _isActivateChecked;
+            set
+            {
+                // Use the Dispatcher to safely update data-bound properties
+                if (Application.Current.Dispatcher.CheckAccess())
+                {
+                    // If already on the UI thread, update directly
+                    if (SetProperty(ref _isActivateChecked, value, nameof(IsActivateChecked)))
+                    {
+                        if (string.IsNullOrEmpty(SelectedWeapon.WeaponName))
+                        {
+                            // Show a dialog to the user to select a weapon
+                            _dialogService.ShowDialog("Please select a weapon to activate.");
+                            IsActivateChecked = false;
+                        }
+                        else
+                        {
+                            // Activate or deactivate the selected weapon
+                            _coreService.IsActive = value;
+                        }
+                    }
+                }
+                else
+                {
+                    // Marshal the update to the UI thread
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (SetProperty(ref _isActivateChecked, value, nameof(IsActivateChecked)))
+                        {
+                            if (string.IsNullOrEmpty(SelectedWeapon.WeaponName))
+                            {
+                                // Show a dialog to the user to select a weapon
+                                _dialogService.ShowDialog("Please select a weapon to activate.");
+                                IsActivateChecked = false;
+                            }
+                            else
+                            {
+                                // Activate or deactivate the selected weapon
+                                _coreService.IsActive = value;
+                            }
+                        }
+                    });
+                }
+            }
         }
+
+        public DateTime? StartTime
+        {
+            get => _startTime;
+            set => SetProperty(ref _startTime, value, nameof(StartTime));
+        }
+
+
+        public CommandBase ActivateWeaponCommand { get; }
+
 
         public async void LoadWeaponsAsync()
         {
@@ -63,14 +150,36 @@ namespace Anti_Recoil_Application.ViewModels
                         IsActive = false
                     });
                 }
+
+                // Initialize weapons in the CoreService
+                _coreService.InitializeWeapons(weapons);
+                _coreService.UpdateLoop();
+            }
+            catch (HttpRequestException ex)
+            {
+                _dialogService.ShowErrorDialog(ex.Message, Logout, "Retry!", LoadWeaponsAsync);
             }
             catch (Exception ex)
             {
-                // Log the error or show a dialog to the user
-                _dialogService.ShowDialog(ex.Message);
+                _dialogService.ShowErrorDialog(ex.Message, Logout, "Retry!", LoadWeaponsAsync);
             }
+
         }
 
+        private void Logout()
+        {
+            Microsoft.Extensions.Hosting.IHost? appHost = App.AppHost;
+            
+            if (appHost == null)
+            {
+                throw new ArgumentNullException(nameof(appHost));
+            }
+
+            var dialogService = appHost.Services.GetRequiredService<DialogService>();
+            var hostProviderService = appHost.Services.GetRequiredService<HostProviderService>();
+            var mainWindowViewModel = appHost.Services.GetRequiredService<MainWindowViewModel>();
+            _mainWindowViewModel.SwitchCurrentView(new LoginViewModel(dialogService, hostProviderService, mainWindowViewModel));    
+        }
 
         private void ActivateWeapon(object parameter)
         {
@@ -90,9 +199,10 @@ namespace Anti_Recoil_Application.ViewModels
                 {
                     // Deactivate the selected weapon
                     SelectedWeapon.IsActive = false;
-                    SelectedWeapon = null;
+                    SelectedWeapon = new WeaponViewModel();
                 }
             }
         }
+
     }
 }

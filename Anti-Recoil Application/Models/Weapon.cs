@@ -14,15 +14,34 @@ namespace Anti_Recoil_Application.Models
         [JsonPropertyName("pattern")]
         public string Pattern { get; set; } = string.Empty;
 
-        public static List<Vector2> ConvertPattern(string pattern)
+        public List<Vector2> ConvertPattern()
         {
-            return pattern.Split(';') // Assuming ";" separates x,y pairs
-                          .Select(coord =>
-                          {
-                              var parts = coord.Split(',');
-                              return new Vector2(float.Parse(parts[0]), float.Parse(parts[1]));
-                          })
-                          .ToList();
+            // Check if the pattern is null or empty
+            if (string.IsNullOrEmpty(Pattern))
+            {
+                return new List<Vector2>();
+            }
+
+            // Assuming the pattern data is a flat list of coordinates like "2,4,2,4,2,4,..."
+            var coordinates = new List<Vector2>();
+
+            // Split the data by commas (e.g., 2,4,2,4,...)
+            var parts = Pattern.Split(',');
+
+            // Iterate through the parts in pairs (x,y)
+            for (int i = 0; i < parts.Length; i += 2)
+            {
+                // Parse x and y values and create a new Vector2
+                if (i + 1 < parts.Length)
+                {
+                    float x = float.Parse(parts[i]);
+                    float y = float.Parse(parts[i + 1]);
+                    coordinates.Add(new Vector2(x, y));
+                }
+            }
+
+            return coordinates;
         }
+
     }
 }

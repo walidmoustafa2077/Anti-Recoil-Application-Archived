@@ -11,6 +11,12 @@ namespace Anti_Recoil_Application.ViewModels.DialogViewModels
         private string _mainFieldWatermarkText = string.Empty;
         private string _submitButtonText = "Confirm";
 
+        public EnterFieldDialogViewModel(Action onButtonClick, Action onSubmitButtonClick)
+        : base(onButtonClick)
+        {
+            SubmitCommand = new CommandBase(_ => onSubmitButtonClick?.Invoke());
+        }
+
         public string MainField
         {
             get => _mainField;
@@ -22,7 +28,7 @@ namespace Anti_Recoil_Application.ViewModels.DialogViewModels
             get => _secondField;
             set => SetProperty(ref _secondField, value, nameof(SecondField));
         }
-        
+
         public string MainFieldWatermarkText
         {
             get => _mainFieldWatermarkText;
@@ -38,10 +44,6 @@ namespace Anti_Recoil_Application.ViewModels.DialogViewModels
         // Submit command
         public ICommand SubmitCommand { get; }
 
-        public EnterFieldDialogViewModel(Action onButtonClick, Action onSubmitButtonClick)
-            : base(onButtonClick)
-        {
-            SubmitCommand = new CommandBase(_ => onSubmitButtonClick?.Invoke());
-        }
+
     }
 }

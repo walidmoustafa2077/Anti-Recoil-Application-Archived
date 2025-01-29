@@ -1,8 +1,8 @@
-﻿using Anti_Recoil_Application.Helpers;
+﻿using Anti_Recoil_Application.Core.Services;
 using Anti_Recoil_Application.Models;
 using Anti_Recoil_Application.ViewModels;
 using Anti_Recoil_Application.ViewModels.DialogViewModels;
-using System.Collections.ObjectModel;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -20,13 +20,16 @@ namespace Anti_Recoil_Application.Services
 
         private readonly MainWindowViewModel _mainWindowViewModel;
 
-
-        public HostProviderService(DialogService dialogService, MainWindowViewModel mainWindowViewModel)
+        public HostProviderService(DialogService dialogService, MainWindowViewModel mainWindowViewModel, SettingsService settingsService)
         {
             _dialogService = dialogService;
 
             _httpClient = new HttpClient();
             _mainWindowViewModel = mainWindowViewModel;
+
+            // Load the token from the settings
+            settingsService.Load();
+            _authToken = settingsService.Settings.Token;
         }
 
 
@@ -44,12 +47,12 @@ namespace Anti_Recoil_Application.Services
                     return true;
                 }
 
-                _dialogService.ShowDialog($"API returned status code: {response.StatusCode}");
+                _dialogService.ShowErrorDialog($"API returned status code: {response.StatusCode}");
                 return false;
             }
             catch (Exception ex)
             {
-                _dialogService.ShowDialog($"Error checking connection: {ex.Message}");
+                _dialogService.ShowErrorDialog($"Error checking connection: {ex.Message}");
                 return false;
             }
         }
@@ -102,7 +105,7 @@ namespace Anti_Recoil_Application.Services
 
                     _mainWindowViewModel.IsLoading = false;
 
-                    _dialogService.ShowDialog("Login failed: No token received.");
+                    _dialogService.ShowErrorDialog("Login failed: No token received.");
 
                     return (true, false); // Login success, no connection issue
                 }
@@ -128,7 +131,7 @@ namespace Anti_Recoil_Application.Services
                             }
                             else
                             {
-                                await _dialogService.ShowDialogAsync("Email verification failed");
+                                await _dialogService.ShowErrorDialogAsync("Email verification failed");
                             }
                         });
 
@@ -138,16 +141,14 @@ namespace Anti_Recoil_Application.Services
                     return (false, false); // Login failed, no connection issue
                 }
 
-
-
-                _dialogService.ShowDialog($"Login failed: {errorMessage}");
+                _dialogService.ShowErrorDialog($"Login failed: {errorMessage}");
                 return (false, false); // Login failed, no connection issue
             }
             catch (Exception ex)
             {
                 // Handle any exception and show the error
                 _mainWindowViewModel.IsLoading = false;
-                _dialogService.ShowDialog($"Error during login: {ex.Message}");
+                _dialogService.ShowErrorDialog($"Error during login: {ex.Message}");
                 return (false, true); // Return false for success and true for connection issue
             }
         }
@@ -188,7 +189,7 @@ namespace Anti_Recoil_Application.Services
                     _mainWindowViewModel.IsLoading = false;
                     // If the response is not successful, show the error message
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
+                    await _dialogService.ShowErrorDialogAsync($"Registration failed: {errorMessage}");
                     return null; // Return null in case of failed validation
                 }
             }
@@ -196,7 +197,7 @@ namespace Anti_Recoil_Application.Services
             {
                 // Log the exception (if necessary)
                 _mainWindowViewModel.IsLoading = false;
-                _dialogService.ShowDialog($"Validation failed: {ex.Message}");
+                _dialogService.ShowErrorDialog($"Validation failed: {ex.Message}");
 
                 // Optionally, you can log the exception message or show a generic error dialog
                 // Example: _dialogService.ShowDialog($"Error: {ex.Message}");
@@ -241,7 +242,7 @@ namespace Anti_Recoil_Application.Services
                     _mainWindowViewModel.IsLoading = false;
                     // If the response is not successful, show the error message
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
+                    await _dialogService.ShowErrorDialogAsync($"Registration failed: {errorMessage}");
                     return false;
 
                 }
@@ -250,9 +251,8 @@ namespace Anti_Recoil_Application.Services
             {
 
                 _mainWindowViewModel.IsLoading = false;
-                _dialogService.ShowDialog($"Validation failed: {ex.Message}");
+                _dialogService.ShowErrorDialog($"Validation failed: {ex.Message}");
                 return false;
-
             }
 
         }
@@ -299,7 +299,7 @@ namespace Anti_Recoil_Application.Services
                     _mainWindowViewModel.IsLoading = false;
                     // If the response is not successful, show the error message
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
+                    await _dialogService.ShowErrorDialogAsync($"Registration failed: {errorMessage}");
                     return false;
                 }
             }
@@ -309,7 +309,7 @@ namespace Anti_Recoil_Application.Services
 
                 // Log the exception if necessary
                 // Optionally handle the error (e.g., show a generic error message)
-                _dialogService.ShowDialog($"Validation failed: {ex.Message}");
+                _dialogService.ShowErrorDialog($"Validation failed: {ex.Message}");
                 return false;
             }
         }
@@ -358,49 +358,15 @@ namespace Anti_Recoil_Application.Services
                     _mainWindowViewModel.IsLoading = false;
                     // If the response is not successful, show the error message
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
+                    await _dialogService.ShowErrorDialogAsync($"Registration failed: {errorMessage}");
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 _mainWindowViewModel.IsLoading = false;
-
+                // Log the exception
                 return false;
-            }
-        }
-
-
-
-        /// <summary>
-        /// Fetches weapon data from the API.
-        /// </summary>
-        /// <returns>The weapon data as a string, or null if an error occurs.</returns>
-        public async Task<string> GetWeaponDataAsync()
-        {
-            try
-            {
-                var isConnected = await IsConnectedAsync();
-                if (!isConnected) return null;
-
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-
-                var response = await _httpClient.GetAsync("/Weapons");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return await response.Content.ReadAsStringAsync();
-                }
-
-                // If the response is not successful, show the error message
-                var errorMessage = await response.Content.ReadAsStringAsync();
-                await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                _dialogService.ShowDialog($"Error fetching weapon data: {ex.Message}");
-                return null;
             }
         }
 
@@ -472,7 +438,7 @@ namespace Anti_Recoil_Application.Services
                             }
                             else
                             {
-                                await _dialogService.ShowDialogAsync("Email verification failed");
+                                await _dialogService.ShowErrorDialogAsync("Email verification failed");
                             }
                         });
 
@@ -482,13 +448,13 @@ namespace Anti_Recoil_Application.Services
 
                         return (true, registerResponse.User.Email);
                     }
-                    await _dialogService.ShowDialogAsync("User registration successful, but user details are missing.");
+                    await _dialogService.ShowDialogAsync("User registration successful, User not confirmed!");
                     return (true, string.Empty);
                 }
                 else
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    await _dialogService.ShowDialogAsync($"Registration failed: {errorMessage}");
+                    await _dialogService.ShowErrorDialogAsync($"Registration failed: {errorMessage}");
                     return (false, string.Empty);
                 }
 
@@ -497,7 +463,7 @@ namespace Anti_Recoil_Application.Services
             {
                 // Handle any exceptions that occur during the registration process
                 _mainWindowViewModel.IsLoading = false;
-                await _dialogService.ShowDialogAsync($"Error during registration: {ex.Message}");
+                await _dialogService.ShowErrorDialogAsync($"Error during registration: {ex.Message}");
                 return (false, string.Empty);
             }
         }
@@ -566,58 +532,63 @@ namespace Anti_Recoil_Application.Services
                 var isConnected = await IsConnectedAsync();
                 if (!isConnected)
                 {
-                    _dialogService.ShowDialog("No internet connection. Please check your network settings.");
+                    _dialogService.ShowErrorDialog("No internet connection. Please check your network settings.");
                     return new List<Weapon>();
                 }
 
                 // Clear headers and make API call
                 _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
                 var response = await _httpClient.GetAsync($"{_baseApiUrl}/Weapons");
 
                 if (response.IsSuccessStatusCode)
                 {
                     // Read and deserialize response content
                     var weapons = await response.Content.ReadFromJsonAsync<List<Weapon>>();
-                    return weapons ?? new List<Weapon>(); // Handle null case
+                    if (weapons != null)
+                    {
+                        return weapons;
+                    }
                 }
 
-                // Log and notify about HTTP error
-                _dialogService.ShowDialog($"Failed to fetch weapons. Status Code: {response.StatusCode}");
-                return new List<Weapon>();
+                // throw an exception if the response is not successful
+                throw new HttpRequestException($"API returned status code: {response.StatusCode}");
             }
             catch (HttpRequestException httpEx)
             {
-                _dialogService.ShowDialog($"Network error while fetching weapon data: {httpEx.Message}");
+                // Ensure IsLoading is reset regardless of outcome
+                _mainWindowViewModel.IsLoading = false;
+                throw new Exception($"Error fetching weapon data: {httpEx.Message}");
             }
             catch (JsonException jsonEx)
             {
-                _dialogService.ShowDialog($"Error parsing weapon data: {jsonEx.Message}");
+                // Ensure IsLoading is reset regardless of outcome
+                _mainWindowViewModel.IsLoading = false;
+                throw new Exception($"Error parsing weapon data: {jsonEx.Message}");
             }
             catch (Exception ex)
             {
-                _dialogService.ShowDialog($"Unexpected error: {ex.Message}");
+                // Ensure IsLoading is reset regardless of outcome
+                _mainWindowViewModel.IsLoading = false;
+                throw new Exception($"Error fetching weapon data: {ex.Message}");
             }
             finally
             {
                 // Ensure IsLoading is reset regardless of outcome
                 _mainWindowViewModel.IsLoading = false;
-            }
 
-            return new List<Weapon>(); // Return an empty list in case of error
+            }
         }
 
 
         private void StoreToken(string token)
         {
-            // Store the token in memory or some secure storage
-            // For example, we can store it in a class-level variable (e.g., `_authToken`).
             _authToken = token;
+            var settings = App.AppHost?.Services.GetRequiredService<SettingsService>();
+            settings?.UpdateSettings(token: token);
 
-            // Alternatively, you can store it in secure local storage if required
-            // e.g., for web applications, you can use localStorage or sessionStorage
         }
-
-
 
     }
 }

@@ -28,19 +28,6 @@
                 <ImageBrush ImageSource="Resources/Images/Wallpapers/Main.png" />
             </Grid.Background>
 
-            <StackPanel Margin="4"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
-
-                <Button Width="Auto"
-                        Margin="0 0 8 0"
-                        Style="{StaticResource MinimaizeAppButtonStyle}"
-                        Click="MinimizeButton_Click" />
-                <Button Margin="8 0 0 0"
-                        Style="{StaticResource CloseAppButtonStyle}"
-                        Click="CloseButton_Click" />
-            </StackPanel>
 
             <ContentControl Content="{Binding CurrentView}" MaxWidth="800" MaxHeight="600" Margin="4"/>
             
@@ -62,6 +49,21 @@
 
             <ContentControl Style="{StaticResource LoadingIcon}"
                         Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            
+            
+            <StackPanel Margin="4"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+                <Button Width="Auto"
+                        Margin="0 0 8 0"
+                        Style="{StaticResource MinimaizeAppButtonStyle}"
+                        Click="MinimizeButton_Click" />
+                <Button Margin="8 0 0 0"
+                        Style="{StaticResource CloseAppButtonStyle}"
+                        Click="CloseButton_Click" />
+            </StackPanel>
 
         </Grid>
     </Border>

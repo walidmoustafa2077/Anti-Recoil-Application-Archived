@@ -17,11 +17,11 @@ namespace Anti_Recoil_Application.Services
         {
             _mainWindowViewModel.ShowDialog(dialogViewModel, false);
         }
+
         public void ShowDialog(object dialogViewModel, bool isRetyped)
         {
             _mainWindowViewModel.ShowDialog(dialogViewModel, true);
         }
-
 
         public async Task ShowDialogAsync(object dialogViewModel)
         {
@@ -39,6 +39,30 @@ namespace Anti_Recoil_Application.Services
             ShowDialog(dialogViewModel);
         }
 
+        public void ShowErrorDialog(string message, Action? mainAction = null, string? secondButton = null, Action? secondAction = null)
+        {
+            bool haveSecondButton = !string.IsNullOrEmpty(secondButton) || secondAction != null;
+            var dialogViewModel = new ErrorDialogViewModel(
+                onButtonClick: () =>
+                {
+                    CloseDialog();
+                    mainAction?.Invoke();
+                },
+                onSecondButtonClick: () =>
+                {
+                    // Close the dialog and invoke the second button action if provided
+                    CloseDialog();
+                    secondAction?.Invoke();
+                })
+            {
+                HeaderText = message,
+                ButtonText = "Close",
+                SecondButtonText = haveSecondButton ? secondButton ?? "Retry" : string.Empty // Default to "Retry" if no text is provided
+            };
+
+            ShowDialog(dialogViewModel);
+        }
+
 
         public async Task ShowDialogAsync(string message)
         {
@@ -51,6 +75,17 @@ namespace Anti_Recoil_Application.Services
             await _mainWindowViewModel.ShowDialogAsync(dialogViewModel);
         }
 
+
+        public async Task ShowErrorDialogAsync(string message)
+        {
+            var dialogViewModel = new ErrorDialogViewModel(() => CloseDialog())
+            {
+                HeaderText = message,
+                ButtonText = "Close"
+            };
+
+            await _mainWindowViewModel.ShowDialogAsync(dialogViewModel);
+        }
 
         public EnterFieldDialogViewModel CreateEnterFieldDialogViewModel(string headerText, string mainField, string fieldHelperText, Action<string>? onSubmit)
         {
