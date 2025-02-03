@@ -17,16 +17,16 @@ namespace Anti_Recoil_Application.ViewModels
         private readonly HostProviderService _hostProviderService;
         private readonly MainWindowViewModel _mainWindowViewModel;
 
-        private string _firstName;
-        private string _lastName;
-        private string _username;
-        private string _email;
-        private string _password;
-        private string _confirmPassword;
-        private string _country;
-        private string _city;
-        private DateTime? _dateOfBirth;
-        private string _selectedGender;
+        private string _firstName = string.Empty;
+        private string _lastName = string.Empty;
+        private string _username = string.Empty;
+        private string _email = string.Empty;
+        private string _password = string.Empty;
+        private string _confirmPassword = string.Empty;
+        private string _country = string.Empty;
+        private string _city = string.Empty;
+        private DateTime? _dateOfBirth = new DateTime();
+        private string _selectedGender = string.Empty;
 
 
         public RegisterViewModel(DialogService dialogService, HostProviderService hostProviderService, MainWindowViewModel mainWindowViewModel)
@@ -157,6 +157,8 @@ namespace Anti_Recoil_Application.ViewModels
                 }
             }
         }
+
+        // Selected Gender Property 
         public string SelectedGender
         {
             get => _selectedGender;
@@ -166,7 +168,11 @@ namespace Anti_Recoil_Application.ViewModels
                 OnPropertyChanged(nameof(SelectedGender)); // Notify property change if using INotifyPropertyChanged
                 }
         }
+
+        // Register Command 
         public ICommand RegisterCommand { get; }
+
+        // Cancel Command (e.g., switch to login screen)
         public ICommand CancelCommand { get; }
 
 
@@ -244,14 +250,16 @@ namespace Anti_Recoil_Application.ViewModels
             if (registrationSuccess)
             {
                 // Handle successful registration (e.g., switch to login screen)
-                _mainWindowViewModel.SwitchCurrentView(App.AppHost?.Services.GetRequiredService<LoginViewModel>());
+                LoginViewModel currentViewModel = new LoginViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
+                _mainWindowViewModel.SwitchCurrentView(currentViewModel);
             }
         }
 
         public void HasRegistered()
         {
             // Handle successful registration (e.g., switch to login screen)
-            _mainWindowViewModel.SwitchCurrentView(App.AppHost?.Services.GetRequiredService<LoginViewModel>());
+            LoginViewModel currentViewModel = new LoginViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
+            _mainWindowViewModel.SwitchCurrentView(currentViewModel);
         }
 
 

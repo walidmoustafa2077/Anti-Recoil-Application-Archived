@@ -108,17 +108,8 @@ namespace Anti_Recoil_Application.ViewModels
                     if (user != null)
                     {
                         // If the enteredText is valid, send code to email
-                        var isCodeSent = await _hostProviderService.SendVerificationCodeAsync(user.Email);
+                        await SendVerificationCodeAsync(user);
 
-                        if (isCodeSent)
-                        {
-                            // Show confirmation dialog if the code was sent successfully
-                            _mainWindowViewModel.IsLoading = true;
-                            ShowConfirmationDialog(user);
-                            _mainWindowViewModel.IsLoading = false;
-
-                        }
-          
                     }
                 }
             );
@@ -126,10 +117,26 @@ namespace Anti_Recoil_Application.ViewModels
             _dialogService.ShowDialog(dialogViewModel);
         }
 
+        private async Task SendVerificationCodeAsync(User? user)
+        {
+            if (user == null)
+                return;
+
+            var isCodeSent = await _hostProviderService.SendVerificationCodeAsync(user.Email);
+
+            if (isCodeSent)
+            {
+                // Show confirmation dialog if the code was sent successfully
+                _mainWindowViewModel.IsLoading = true;
+                ShowConfirmationDialog(user);
+                _mainWindowViewModel.IsLoading = false;
+            }
+        }
+
         private void ShowConfirmationDialog(User user)
         {
             var confirmationDialogViewModel = _dialogService.CreateEnterFieldDialogViewModel(
-                "Please, Enter Code Sent to Your Mail.", 
+                "Please, Enter Verification Code Sent to Your Mail.",
                 string.Empty,
                 "Enter your code.",
                 async (enteredText) =>
@@ -144,6 +151,15 @@ namespace Anti_Recoil_Application.ViewModels
                         _mainWindowViewModel.IsLoading = false;
 
                     }
+                },
+                (enteredText, secondEnteredText) =>
+                {
+
+                },
+                async (enteredText) =>
+                {
+                    // If the enteredText is valid, send code to email
+                        await SendVerificationCodeAsync(user);
                 }
             );
 
@@ -153,12 +169,21 @@ namespace Anti_Recoil_Application.ViewModels
         private void ShowForgotPasswordDialog(User user, string enteredCode)
         {
             var forgotPasswordDialogViewModel = _dialogService.CreateEnterFieldDialogViewModel(
-                "Enter New Password.", 
+                "Enter New Password.",
                 string.Empty,
                 string.Empty, // Set to an empty string instead of null
-                async (enteredText) =>
+                (enteredText) =>
                 {
-                    var isCodeValid = await _hostProviderService.UpdatePasswordAsync(user.Email, enteredText, enteredCode);
+  
+                },
+                async (enteredText, secondEnteredText) =>
+                {
+                    if (enteredText != secondEnteredText)
+                    {
+                        _dialogService.ShowDialog("Passwords do not match.");
+                        return;
+                    }
+                    var isCodeValid = await _hostProviderService.ResetPasswordAsync(user.Email, enteredText, enteredCode);
 
                     // Update the password with the new one
                     _dialogService.CloseDialog();

@@ -455,9 +455,9 @@
                     <Grid>
                         <TextBlock x:Name="TextContent"
                                    Text="{TemplateBinding Content}"
-                                   FontSize="12"
+                                   FontSize="{TemplateBinding FontSize}"
                                    TextAlignment="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HorizontalAlignment}"
-                                   HorizontalAlignment="Stretch"
+                                   HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                                    Margin="4 0"
                                    VerticalAlignment="Center"
                                    Foreground="{TemplateBinding Foreground}" />

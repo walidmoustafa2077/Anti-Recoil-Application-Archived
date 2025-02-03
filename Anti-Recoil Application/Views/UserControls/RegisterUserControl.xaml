@@ -32,13 +32,13 @@
             <StackPanel Orientation="Horizontal"
                         x:Name="MyContainer2">
                 <!-- First Name -->
-                <TextBox Width="190"
+                <TextBox Width="195"
                          Style="{StaticResource PrimaryInputFieldStyle}"
                          helpers:WatermarkHelper.WatermarkText="Enter First Name"
                          Margin="0,10,0,0"
                          Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBox Width="200"
+                <TextBox Width="195"
                          Style="{StaticResource PrimaryInputFieldStyle}"
                          helpers:WatermarkHelper.WatermarkText="Enter Last Name"
                          Margin="10,10,0,0"

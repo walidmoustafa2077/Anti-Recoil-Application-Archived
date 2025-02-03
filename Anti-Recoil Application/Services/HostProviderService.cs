@@ -1,11 +1,14 @@
 ﻿using Anti_Recoil_Application.Core.Services;
+using Anti_Recoil_Application.Enums;
 using Anti_Recoil_Application.Models;
 using Anti_Recoil_Application.ViewModels;
 using Anti_Recoil_Application.ViewModels.DialogViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -206,7 +209,7 @@ namespace Anti_Recoil_Application.Services
             }
         }
 
-
+ 
         public async Task<bool> SendVerificationCodeAsync(string email)
         {
             try
@@ -314,8 +317,7 @@ namespace Anti_Recoil_Application.Services
             }
         }
 
-
-        public async Task<bool> UpdatePasswordAsync(string email, string password, string enteredCode)
+        public async Task<bool> ResetPasswordAsync(string email, string password, string enteredCode = null)
         {
             // Send a request to the API to update the password
             try
@@ -344,13 +346,66 @@ namespace Anti_Recoil_Application.Services
                 var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
                 // Use the correct endpoint for validating the verification code
-                var response = await _httpClient.PostAsync($"{_baseApiUrl}/Authentication/forget-password", content);
+                var response = await _httpClient.PostAsync($"{_baseApiUrl}/Authentication/reset-password", content);
 
                 // Check if the response is successful (status code 200 OK)
                 if (response.IsSuccessStatusCode)
                 {
                     _mainWindowViewModel.IsLoading = false;
                     await _dialogService.ShowDialogAsync($"Password updated successfully"); // Wait for dialog to close
+                    return true;
+                }
+                else
+                {
+                    _mainWindowViewModel.IsLoading = false;
+                    // If the response is not successful, show the error message
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    await _dialogService.ShowErrorDialogAsync($"Registration failed: {errorMessage}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _mainWindowViewModel.IsLoading = false;
+                // Log the exception
+                return false;
+            }
+        }
+
+        public async Task<bool> CheckPasswordAsync(string email, string password)
+        {
+            try
+            {
+                _mainWindowViewModel.IsLoading = true;
+                var isConnected = await IsConnectedAsync();
+                if (!isConnected)
+                {
+                    _mainWindowViewModel.IsLoading = false;
+
+                    return false; // If not connected, return false
+                }
+
+                // Clear headers and make API call
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                // Prepare the request payload
+                var request = new
+                {
+                    usernameOrEmail = email,
+                    password = password,
+                };
+
+                // Serialize the request object to JSON
+                var jsonString = JsonSerializer.Serialize(request);
+                var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                // Use the correct endpoint for validating the verification code
+                var response = await _httpClient.PostAsync($"{_baseApiUrl}/Authentication/check-password", content);
+
+                // Check if the response is successful (status code 200 OK)
+                if (response.IsSuccessStatusCode)
+                {
+                    _mainWindowViewModel.IsLoading = false;
                     return true;
                 }
                 else
@@ -522,6 +577,116 @@ namespace Anti_Recoil_Application.Services
             }
         }
 
+        public async Task<bool> UpdateUserAsync(string email, string? value, UpdateUserOption? option)
+        {
+            try
+            {
+                _mainWindowViewModel.IsLoading = true;
+                var isConnected = await IsConnectedAsync();
+                if (!isConnected)
+                {
+                    _mainWindowViewModel.IsLoading = false;
+
+                    return false; // If not connected, return false
+                }
+
+                // Clear headers and make API call
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+                // convert otpion to string
+                string newOption = option switch
+                {
+                    UpdateUserOption.FirstName => "FirstName",
+                    UpdateUserOption.LastName => "LastName",
+                    UpdateUserOption.Username => "Username",
+                    UpdateUserOption.Email => "Email",
+                    UpdateUserOption.Password => "Password",
+                };
+
+                // Prepare the request payload
+                var request = new
+                {
+                    usernameOrEmail = email,
+                    option = newOption,
+                    newValue = value
+                };
+
+                // Serialize the request object to JSON
+                var jsonString = JsonSerializer.Serialize(request);
+                var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                // Use the correct endpoint for validating the verification code
+                var response = await _httpClient.PostAsync($"{_baseApiUrl}/Authentication/update-user", content);
+
+                // Check if the response is successful (status code 200 OK)
+                if (response.IsSuccessStatusCode)
+                {
+                    _mainWindowViewModel.IsLoading = false;
+                    await _dialogService.ShowDialogAsync($"User {newOption} updated successfully");
+                    return true;
+                }
+                else
+                {
+                    _mainWindowViewModel.IsLoading = false;
+                    // If the response is not successful, show the error message
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    await _dialogService.ShowErrorDialogAsync($"Registration failed: {errorMessage}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _mainWindowViewModel.IsLoading = false;
+                // Log the exception
+                return false;
+            }
+        }
+
+        // get user data from token
+        public async Task<User?> GetUserAsync()
+        {
+            try
+            {
+                _mainWindowViewModel.IsLoading = true;
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+
+                var jwtToken = tokenHandler.ReadJwtToken(_authToken);
+                var userName = jwtToken.Claims.FirstOrDefault(c =>
+                    c.Type == ClaimTypes.NameIdentifier ||
+                    c.Type == ClaimTypes.Name ||
+                    c.Type == "sub" || // Common in JWTs
+                    c.Type == "unique_name" || // Some APIs use this
+                    c.Type == "email" // If email is used as username
+                )?.Value;
+
+
+                if (string.IsNullOrEmpty(userName))
+                {
+                    throw new Exception("Username not found in token");
+                }
+
+                var user = await ValidateUsernameOrEmailAsync(userName);
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                _dialogService.ShowErrorDialog($"Error fetching user data: {ex.Message}");
+                return null; // Return null instead of an unhandled exception
+            }
+            finally
+            {
+                _mainWindowViewModel.IsLoading = false;
+            }
+        }
+
         public async Task<List<Weapon>> GetWeaponsAsync()
         {
             try
@@ -589,6 +754,7 @@ namespace Anti_Recoil_Application.Services
             settings?.UpdateSettings(token: token);
 
         }
+
 
     }
 }

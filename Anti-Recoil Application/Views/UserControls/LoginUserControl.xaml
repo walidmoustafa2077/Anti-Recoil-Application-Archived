@@ -44,6 +44,7 @@
                 <Button Content="Forgot Password?"
                         Style="{StaticResource TextButtonStyle}"
                         HorizontalAlignment="Right"
+                        FontSize="14"
                         Margin="0,6,0,0"
                         Command="{Binding ForgotPasswordCommand}" />
             </StackPanel>

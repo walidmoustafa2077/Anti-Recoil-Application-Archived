@@ -1,8 +1,5 @@
-﻿using Anti_Recoil_Application.Core.Services;
-using Anti_Recoil_Application.Services;
-using Anti_Recoil_Application.UserControls;
+﻿using Anti_Recoil_Application.UserControls;
 using Anti_Recoil_Application.ViewModels.DialogViewModels;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Anti_Recoil_Application.ViewModels
 {
@@ -85,11 +82,18 @@ namespace Anti_Recoil_Application.ViewModels
 
         public void ShowDialog(object dialogViewModel, bool isRetyped)
         {
+            bool isEnterCodeDialog = false;
+
+            // check if new dialog is header have Send Verification Code and if it is, then set isEnterCodeDialog to true
+            if (dialogViewModel is MainDialogViewModel mainDialogViewModel && mainDialogViewModel.HeaderText.Contains("Verification Code"))
+                isEnterCodeDialog = true;
+
             CurrentDialog = dialogViewModel switch
             {
-                EnterFieldDialogViewModel enterUsernameDialog => isRetyped
-                    ? new UserControls.Dialogs.EnterRepeatedFieldDialog { DataContext = enterUsernameDialog }
-                    : new UserControls.Dialogs.EnterFieldDialog(enterUsernameDialog),
+                AccountDialogViewModel accountDialog => new UserControls.Dialogs.AccountDialog { DataContext = accountDialog },
+                EnterFieldDialogViewModel enterFieldDialog => isRetyped
+                    ? new UserControls.Dialogs.EnterRepeatedFieldDialog { DataContext = enterFieldDialog }
+                    : isEnterCodeDialog ? new UserControls.Dialogs.EnterVerificationCodeDialog { DataContext = enterFieldDialog } : new UserControls.Dialogs.EnterFieldDialog(enterFieldDialog),
                 ErrorDialogViewModel errorDialog => new UserControls.Dialogs.ErrorDialog { DataContext = errorDialog },
                 MainDialogViewModel dialog => new UserControls.Dialogs.MainDialog { DataContext = dialog },
                 _ => throw new ArgumentException("Unsupported dialog view model type.", nameof(dialogViewModel))

@@ -87,34 +87,67 @@ namespace Anti_Recoil_Application.Services
             await _mainWindowViewModel.ShowDialogAsync(dialogViewModel);
         }
 
-        public EnterFieldDialogViewModel CreateEnterFieldDialogViewModel(string headerText, string mainField, string fieldHelperText, Action<string>? onSubmit)
+        public EnterFieldDialogViewModel CreateEnterFieldDialogViewModel(
+            string headerText,
+            string mainField,
+            string fieldHelperText,
+            Action<string?>? onSubmit = null,  // Single-argument version
+            Action<string?, string?>? onSubmitDouble = null,  // Two-argument version
+            Action<string>? onSecondSubmit = null)
         {
             return new EnterFieldDialogViewModel(
-                onButtonClick: () => CloseDialog(),
+                onCloseButtonClick: () => CloseDialog(),
                 onSubmitButtonClick: () =>
                 {
                     string? mainFieldValue = null;  // Declare the variable outside of the if block
+                    string? secondFieldValue = null;  // Declare the variable outside of the if block
                     var currentDialog = _mainWindowViewModel.CurrentDialog;
 
-                    // Check if currentDialog is of type EnterFieldDialog or EnterRepeatedFieldDialog
-                    if (currentDialog is EnterFieldDialog enterFieldDialog)
+                    // Check if currentDialog is of type Send EnterFieldDialog or EnterRepeatedFieldDialog
+                    if (currentDialog is EnterVerificationCodeDialog enterVerificationCodeDialog)
+                    {
+                        mainFieldValue = enterVerificationCodeDialog.DataContext?.GetType()
+                            .GetProperty("MainField")?.GetValue(enterVerificationCodeDialog.DataContext) as string;
+                        secondFieldValue = enterVerificationCodeDialog.DataContext?.GetType()
+                            .GetProperty("SecondField")?.GetValue(enterVerificationCodeDialog.DataContext) as string;
+                    }
+                    else if (currentDialog is EnterFieldDialog enterFieldDialog)
                     {
                         mainFieldValue = enterFieldDialog.DataContext?.GetType()
                             .GetProperty("MainField")?.GetValue(enterFieldDialog.DataContext) as string;
+                        secondFieldValue = enterFieldDialog.DataContext?.GetType()
+                            .GetProperty("SecondField")?.GetValue(enterFieldDialog.DataContext) as string;
+
                     }
                     else if (currentDialog is EnterRepeatedFieldDialog enterRepeatedFieldDialog)
                     {
                         mainFieldValue = enterRepeatedFieldDialog.DataContext?.GetType()
                             .GetProperty("MainField")?.GetValue(enterRepeatedFieldDialog.DataContext) as string;
+                        secondFieldValue = enterRepeatedFieldDialog.DataContext?.GetType()
+                            .GetProperty("SecondField")?.GetValue(enterRepeatedFieldDialog.DataContext) as string;
                     }
-                    CloseDialog();
 
-                    // Check if mainFieldValue is not null before invoking onSubmit
-                    if (mainFieldValue != null)
+                    if (onSubmitDouble != null)
+                    {
+                        onSubmitDouble?.Invoke(mainFieldValue, secondFieldValue);
+                        CloseDialog();
+                    }
+                    if (onSubmit != null)
+                    {
                         onSubmit?.Invoke(mainFieldValue);
+                        CloseDialog();
+                    }
 
 
-                })
+                },
+                onResendButtonClick: async () =>
+                {
+                    if (onSecondSubmit != null)
+                    {
+                        onSecondSubmit?.Invoke(string.Empty);
+                        CloseDialog();
+                    }
+                }) // Invoke the resendAction if provided
             {
                 HeaderText = headerText,
                 MainFieldWatermarkText = fieldHelperText,

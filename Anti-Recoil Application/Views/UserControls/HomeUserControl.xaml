@@ -73,7 +73,8 @@
 
         <Grid VerticalAlignment="Top"
               HorizontalAlignment="Stretch"
-              Margin="12">
+              Margin="12"
+              MinWidth="740">
 
             <Button Style="{StaticResource TextHolderStyle}"
                     Content="{Binding SelectedWeapon.WeaponName}"
@@ -98,7 +99,8 @@
                     Orientation="Horizontal">
                     
                     <Button Style="{StaticResource SvgIconButtonStyle}"
-                            Margin="2 0">
+                            Margin="2 0"
+                            Command="{Binding LogoutCommand}">
                         <!-- SVG Icon Example -->
                         <Canvas Width="25"
                                 Height="26">
@@ -117,7 +119,8 @@
                         </Canvas>
                     </Button>
                     <Button Style="{StaticResource SvgIconButtonStyle}"
-                            Margin="2 0">
+                            Margin="2 0"
+                            Command="{Binding AccountCommand}">
                         <!-- SVG Icon Example -->
                         <Path Fill="#FF9F9F9F"
                               ClipToBounds="True">
@@ -127,7 +130,8 @@
                         </Path>
                     </Button>
                     <Button Style="{StaticResource SvgIconButtonStyle}"
-                            Margin="2 0">
+                            Margin="2 0"
+                            Command="{Binding SettingsCommand}">
                         <!-- SVG Icon Example -->
                         <Path Fill="#FF9F9F9F">
                             <Path.Data>
