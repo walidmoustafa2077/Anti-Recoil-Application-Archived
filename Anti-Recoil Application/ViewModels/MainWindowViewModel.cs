@@ -90,6 +90,7 @@ namespace Anti_Recoil_Application.ViewModels
 
             CurrentDialog = dialogViewModel switch
             {
+                SettingsDialogViewModel settingsDialogViewModel => new UserControls.Dialogs.SettingsDialog { DataContext = settingsDialogViewModel },
                 AccountDialogViewModel accountDialog => new UserControls.Dialogs.AccountDialog { DataContext = accountDialog },
                 EnterFieldDialogViewModel enterFieldDialog => isRetyped
                     ? new UserControls.Dialogs.EnterRepeatedFieldDialog { DataContext = enterFieldDialog }

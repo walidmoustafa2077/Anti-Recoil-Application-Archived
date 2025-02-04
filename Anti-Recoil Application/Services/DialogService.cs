@@ -87,6 +87,7 @@ namespace Anti_Recoil_Application.Services
             await _mainWindowViewModel.ShowDialogAsync(dialogViewModel);
         }
 
+
         public EnterFieldDialogViewModel CreateEnterFieldDialogViewModel(
             string headerText,
             string mainField,

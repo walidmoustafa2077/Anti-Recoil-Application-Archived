@@ -188,7 +188,8 @@ namespace Anti_Recoil_Application.ViewModels
                     {
                         WeaponName = weapon.WeaponName,
                         WeaponImage = $"pack://application:,,,/Resources/Images/Weapons/{weapon.WeaponName}.png",
-                        Shortcut = $"F{i + 1}", // Assign shortcut keys based on the order (F1, F2, etc.)
+                        Shortcut = $"F{i + 2}", // Assign shortcut keys based on the order (F1, F2, etc.)
+                        Sensitivity = weapon.Sensitivity * 100,
                         IsActive = false
                     });
                 }
@@ -403,7 +404,18 @@ namespace Anti_Recoil_Application.ViewModels
         // 
         private void SettingsDialog(object? obj)
         {
+            var settingsDialogViewModel = new SettingsDialogViewModel(
+                onCloseButtonClick: () => _dialogService.CloseDialog(),
+                onSubmitButtonClick: () => { },
+                onOptionalButtonClick: () => { },
+                Weapons)
+            {
+                HeaderText = "Settings",
+                SubmitButtonText = "Save",
+                ButtonText = "Close"
+            };
 
+            _dialogService.ShowDialog(settingsDialogViewModel);
         }
     }
 }
