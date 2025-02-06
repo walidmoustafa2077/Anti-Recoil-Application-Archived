@@ -266,7 +266,7 @@ namespace Anti_Recoil_Application.ViewModels
         private void ExecuteCancel(object obj)
         {
             // Handle successful registration (e.g., switch to login screen)
-            _mainWindowViewModel.SwitchCurrentView(App.AppHost?.Services.GetRequiredService<LoginViewModel>());
+            _mainWindowViewModel.SwitchCurrentView(new LoginViewModel(_dialogService, _hostProviderService, _mainWindowViewModel));
         }
     }
 

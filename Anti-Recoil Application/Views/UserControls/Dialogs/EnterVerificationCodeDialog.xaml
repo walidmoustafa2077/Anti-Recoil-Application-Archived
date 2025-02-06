@@ -33,7 +33,8 @@
 
                     <Button x:Name="ResendButton"
                             Content="Send verification code agien!"
-                            Margin="0 4"
+                            FontSize="12"
+                            Margin="0 2 0 0"
                             Height="22"
                             HorizontalAlignment="Left"
                             Command="{Binding ResendCommand}"

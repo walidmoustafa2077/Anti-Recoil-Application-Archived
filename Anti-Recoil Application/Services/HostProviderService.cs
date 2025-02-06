@@ -17,7 +17,7 @@ namespace Anti_Recoil_Application.Services
     public class HostProviderService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseApiUrl = "https://localhost:7236/api"; // Base API URL
+        private readonly string _baseApiUrl = "https://anti-recoilapplicationapi20250205071245.azurewebsites.net/api"; // Base API URL
         private readonly DialogService _dialogService;
         private string _authToken;
 

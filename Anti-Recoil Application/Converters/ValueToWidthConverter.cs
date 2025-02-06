@@ -14,7 +14,7 @@ namespace Anti_Recoil_Application.Converters
                 double sliderWidth = (double)values[1];  // Actual Width of the track (TrackBackground)
 
                 // You can get the Min and Max dynamically from the Slider if needed
-                double sliderMin = 50; // Default minimum value of the slider
+                double sliderMin = 20; // Default minimum value of the slider
                 double sliderMax = 140; // Default maximum value of the slider
 
                 // Scale the value relative to the range (sliderMax - sliderMin) and multiply by the width of the slider

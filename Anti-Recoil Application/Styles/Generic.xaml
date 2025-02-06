@@ -1415,13 +1415,14 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="TextHolderBorder"
-                            Background="{StaticResource BrushPrimary}"
+                            Background="{TemplateBinding Background}"
                             CornerRadius="5">
                         <TextBlock x:Name="TextHolderText"
                                    Text="{Binding SelectedWeapon.WeaponName, FallbackValue='No Weapon Selected'}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   TextAlignment="Center" />
+                                   TextAlignment="Center"
+                                   Foreground="{TemplateBinding Foreground}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <!-- Trigger to show 'No Weapon Selected' when SelectedWeapon is null -->

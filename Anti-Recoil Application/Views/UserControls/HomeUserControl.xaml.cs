@@ -32,6 +32,5 @@ namespace Anti_Recoil_Application.UserControls
             }
             e.Handled = true;
         }
-
     }
 }

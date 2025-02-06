@@ -67,6 +67,7 @@ namespace Anti_Recoil_Application
             {
                 // If the token is not empty, display the HomeUserControl
                 var homeViewModel = new HomeViewModel(dialogService, hostProviderService, mainWindowViewModel);
+                await homeViewModel.InitializeAsync();
                 homeViewModel.LoadWeaponsAsync();
                 mainWindowViewModel.SwitchCurrentView(homeViewModel);
             }

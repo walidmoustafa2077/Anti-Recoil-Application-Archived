@@ -19,10 +19,10 @@ namespace Anti_Recoil_Application.ViewModels
         private string _password = string.Empty;
         private bool _isLoggingIn;
 
-        public LoginViewModel(DialogService dialogService, HostProviderService loginService, MainWindowViewModel mainWindowViewModel)
+        public LoginViewModel(DialogService dialogService, HostProviderService hostProviderService, MainWindowViewModel mainWindowViewModel)
         {
             _dialogService = dialogService;
-            _hostProviderService = loginService;
+            _hostProviderService = hostProviderService;
             _mainWindowViewModel = mainWindowViewModel;
 
             LoginCommand = new CommandBase(ExecuteLogin);
@@ -32,7 +32,6 @@ namespace Anti_Recoil_Application.ViewModels
             _registerViewModel = new RegisterViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
 
             _homeViewModel = new HomeViewModel(_dialogService, _hostProviderService, _mainWindowViewModel);
-
         }
 
         public string Username
@@ -87,10 +86,12 @@ namespace Anti_Recoil_Application.ViewModels
             SwitchToHomeView();
         }
 
-        private void SwitchToHomeView()
+        private async void SwitchToHomeView()
         {
+            await _homeViewModel.InitializeAsync();
             _homeViewModel.LoadWeaponsAsync();
             _mainWindowViewModel.SwitchCurrentView(_homeViewModel);
+
         }
 
         private void ExecuteForgotPassword(object obj)

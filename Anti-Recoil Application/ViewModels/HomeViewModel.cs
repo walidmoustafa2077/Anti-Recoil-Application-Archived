@@ -44,10 +44,9 @@ namespace Anti_Recoil_Application.ViewModels
             SettingsCommand = new CommandBase(SettingsDialog);
 
             // Start async initialization without blocking
-            _ = InitializeAsync();
         }
 
-        private async Task InitializeAsync()
+        public async Task InitializeAsync()
         {
             try
             {
@@ -406,9 +405,7 @@ namespace Anti_Recoil_Application.ViewModels
         {
             var settingsDialogViewModel = new SettingsDialogViewModel(
                 onCloseButtonClick: () => _dialogService.CloseDialog(),
-                onSubmitButtonClick: () => { },
-                onOptionalButtonClick: () => { },
-                Weapons)
+                onSubmitButtonClick: () => { })
             {
                 HeaderText = "Settings",
                 SubmitButtonText = "Save",

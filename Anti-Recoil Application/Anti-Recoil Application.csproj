@@ -9,6 +9,8 @@
     <UseWPF>true</UseWPF>
     <PackageIcon>Icon.png</PackageIcon>
     <Company>Recoil Magnet</Company>
+    <AssemblyName>RM Magnet</AssemblyName>
+    <ApplicationIcon>Resources\Brand\App-Icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\Brand\App-Icon.ico" />
     <Content Include="Resources\Brand\Name.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

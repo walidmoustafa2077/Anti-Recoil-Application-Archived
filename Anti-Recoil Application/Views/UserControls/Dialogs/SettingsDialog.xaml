@@ -18,12 +18,58 @@
         <Grid Margin="10">
             <StackPanel>
                 <!-- Header -->
-                <TextBlock x:Name="HeaderText"
-                           Margin="26 12"
-                           HorizontalAlignment="Left"
-                           Text="Main Settings"
-                           FontWeight="Bold"
-                           Style="{StaticResource HeadingStyle}" />
+                <Grid Margin="12">
+                    <TextBlock x:Name="HeaderText"
+                               Margin="26 12"
+                               HorizontalAlignment="Left"
+                               Text="Main Settings"
+                               FontWeight="Bold"
+                               Style="{StaticResource HeadingStyle}" />
+                    <StackPanel HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+
+                        <Button Style="{StaticResource SvgIconButtonStyle}"
+                                Margin="2 0"
+                                Command="{Binding ResetSettingsCommand}">
+                            <!-- SVG Icon Example -->
+                            <Path Fill="{StaticResource BrushTertiary}">
+                                <Path.Data>
+                                    <PathGeometry Figures="M15.4286 0C9.03857 0 3.85714 4.92556 3.85714 11H0L5.14286 15.8767L10.2857 11H6.42857C6.42857 6.27 10.4529 2.44444 15.4286 2.44444C20.4043 2.44444 24.4286 6.27 24.4286 11C24.4286 15.73 20.4043 19.5556 15.4286 19.5556C12.9471 19.5556 10.6971 18.59 9.07714 17.0378L7.25143 18.7733C9.34714 20.7656 12.2271 22 15.4286 22C21.8186 22 27 17.0744 27 11C27 4.92556 21.8186 0 15.4286 0Z"
+                                                  FillRule="NonZero" />
+                                </Path.Data>
+                            </Path>
+                        </Button>
+                        <Button Style="{StaticResource SvgIconButtonStyle}"
+                                Margin="6 0"
+                                Command="{Binding SaveSettingsCommand}">
+                            <!-- SVG Icon Example -->
+                            <Path Fill="{StaticResource BrushTertiary}">
+                                <Path.Data>
+                                    <PathGeometry Figures="M15.5556 0.242676H2.22222C0.994444 0.242676 0 1.31243 0 2.6332V19.3668C0 20.6876 0.994444 21.7574 2.22222 21.7574H17.7778C19.0056 21.7574 20 20.6876 20 19.3668V5.02372L15.5556 0.242676ZM10 19.3668C8.16111 19.3668 6.66667 17.7592 6.66667 15.7811C6.66667 13.8029 8.16111 12.1953 10 12.1953C11.8389 12.1953 13.3333 13.8029 13.3333 15.7811C13.3333 17.7592 11.8389 19.3668 10 19.3668ZM13.3333 7.41423H2.22222V2.6332H13.3333V7.41423Z"
+                                                  FillRule="NonZero" />
+                                </Path.Data>
+                            </Path>
+                        </Button>
+                        <Button Style="{StaticResource SvgIconButtonStyle}"
+                                Margin="2 0"
+                                Command="{Binding BackCommand}">
+                            <!-- SVG Icon Example -->
+                            <Path StrokeThickness="4"
+                                  Stroke="{StaticResource BrushTertiary}"
+                                  StrokeLineJoin="Round"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round">
+                                <Path.Data>
+                                    <PathGeometry Figures="M2 2L12 12L2 22"
+                                                  FillRule="NonZero" />
+                                </Path.Data>
+                            </Path>
+                        </Button>
+                    </StackPanel>
+
+                </Grid>
+                
                 <Line Stroke="{StaticResource BrushTertiary}"
                       StrokeThickness="2"
                       X1="0"
@@ -41,7 +87,7 @@
 
                     <StackPanel Orientation="Horizontal">
                         <Slider Style="{StaticResource ThemedSliderStyle}"
-                                Minimum="50"
+                                Minimum="20"
                                 Maximum="140"
                                 Value="{Binding MainGameSensitivity, Mode=TwoWay}"
                                 Width="300"
@@ -124,7 +170,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Slider Name="WeaponSlider"
                                                 Style="{StaticResource ThemedSliderStyle}"
-                                                Minimum="50"
+                                                Minimum="20"
                                                 Maximum="140"
                                                 Value="{Binding Sensitivity, Mode=TwoWay}"
                                                 Width="300"
